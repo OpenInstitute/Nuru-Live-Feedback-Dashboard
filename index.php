@@ -154,7 +154,7 @@ $col_keys['indoor'] = array(
 			<div class="col-md-7 map">
 				<div class="nuru-intro">
 					<div class="col-md-6">
-						<h3>Nuru Map</h3>
+						<h3 class="mapTitle">Nuru Map</h3>
 					</div>
 					<div class="col-md-offset-3 col-md-3 extras hide">
 						<span class="viewTable"><i class="fas fa-table"></i> View as table &middot; </span> <span class="expandViews"><i class="fas fa-expand-arrows-alt"></i> Expand</span>
@@ -464,6 +464,7 @@ $col_keys['indoor'] = array(
 							let record_id = data[c].properties.id;
 							/*let comment = data[c].properties.comments;*/
 							let comment = data[c].properties.comments_trim;
+							var comment_full = data[c].properties.comments;
 							let author = data[c].properties.post_by;
 							let time = data[c].properties.name;
 
@@ -490,11 +491,11 @@ $col_keys['indoor'] = array(
 							if (lat != "0") {
 								/* href="javascript:void(0);"*/
 								/* data-href="posts.php?lat=' + lat + '&lng=' + lng + '&name=latlong"*/
-								findOnMap = '&middot <a class="feed_markers" data-id="marker_' + record_id + '" ><em> <strong><i class="far fa-dot-circle"></i> Find on map</strong></em></a>';
+								findOnMap = '&middot <a class="feed_markers" lat="'+lat+'" lng="'+lng+'" data-id="marker_' + record_id + '" ><em> <strong><i class="far fa-dot-circle"></i> Find on map</strong></em></a>';
 							}
 
 							/* <hr/> <p>'+ img +'</p> */
-							content += '<article class="comment">' + img + '<div class="comment-body"> <div class="text"><p>' + comment + '</p>  </div> <p class="attribution"> <i class="fas fa-user-alt"></i> <a href="#non">' + author + '</a> &middot; <i class="far fa-clock"></i> ' + time + ' ' + findOnMap + '</a></p> <p class="padd10_t txt12"> <smallx><em><strong>Tags: </strong> ' + tags + '</em></smallx> </p></div></article>';
+							content += '<article class="comment">' + img + '<div class="comment-body"> <div class="text"><p>' + comment + '<br/><a class="more"> More Details</a> </p>  </div> <p class="attribution"> <i class="fas fa-user-alt"></i> <a href="#non">' + author + '</a> &middot; <span class="date"><i class="far fa-clock"></i> ' + time + '</span> ' + findOnMap + '</a></p> <p class="padd10_t txt12"> <smallx><em><strong>Tags: </strong><span class="tagisi"> ' + tags + '</span></em></smallx> </p></div> <div class="hide full_comment">'+ comment_full +'</div> </article>';
 						}
 
 						// console.log(data);
@@ -526,8 +527,88 @@ $col_keys['indoor'] = array(
  
 		});
 
-		// Add a checkbox to select multiple
 
+
+		// Kevin Update - Change the way content is revealed on the map side on click
+		jQuery(document).ready(function($) {
+			$(document).on('click', '.comment', function(data){
+				// alert($(this).('.attribution a'));
+				// alert('comment clicked');
+				// var this = $(this);
+
+				let op = $(this).find('.attribution a').first().text(); //feedback from original poster
+				let message = $(this).find('.full_comment').html();
+				// let message = comment_full;
+				let date = $(this).find('.date').html();
+				let tags = $(this).find('.tagisi').text();
+
+				let img = $(this).find('.comment-img').attr('href');
+				// alert(img);
+				let image = '';
+				if(img !== undefined){
+					image = '<div class="imageDetail"><img src="'+ img +'" /> </div>';
+				};
+
+				let lat = $(this).find('.feed_markers').attr('lat');
+				let lng = $(this).find('.feed_markers').attr('lng');
+
+				
+
+				let content = '';
+				content += '<div class="container feedback nano">';
+				content += '<div class="nano-content">';
+				content += '<div> <a class="back"> <i class="fas fa-long-arrow-alt-left"></i> Back to Map</a></div>';
+				content += '<h4>'+op+' wrote: </h4>';
+				content += '<div class="message"><p>' + message + '</p></div> <hr/>';
+				content += image;
+				content += '<div class="metadata">';
+				content += '<span class="date"><strong>Date Posted: </strong>' + date + '</span><br/>';
+				content += '<span class="tags"><strong>Tags: </strong>' + tags + '</span>';
+				content += '</div> <hr/>';
+				content += '<h5> Location </h5>';
+				content += '<div id="custom-map"></div> <hr/>';
+				content += '</div'; //close nano content
+				content += '</div'; //close container
+
+				$('.mapTitle').text('Feedback from ' + op);
+				$('#map').css('background', '#ffffff');
+				$('#map').html(content);
+
+				// Add this to map
+				var customMap = L.map('custom-map').setView([lat, lng], 13);
+
+				L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+				attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+				}).addTo(customMap);
+
+				var markerIcon = new L.Icon({
+				iconUrl: 'assets/image/marker-icon-green.png',
+				iconSize: [25, 41],
+				iconAnchor: [12, 41],
+				popupAnchor: [1, -34]
+				
+				});
+
+				L.marker([lat, lng], {
+					icon: markerIcon,
+					title: op,
+					riseOnHover: 1
+				}).addTo(customMap).bindPopup(op + '\'s location').openPopup();
+
+
+
+				// Get me out of here
+				$('.back').click(function(){
+					location.reload();
+				});
+
+				// Change comment background color
+				$(this).find('.text').css('background-color', 'rgba(57, 181, 74, .3)');
+				
+			});
+
+		});
+		// End of on click to change content display
 
 
 
