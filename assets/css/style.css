@@ -3,25 +3,29 @@
  * CC by SA
  * Last Edit by Kevin
  */
-.emblem{
+
+.emblem {
     text-align: center;
 }
- .logo{
+
+.logo {
     padding-top: 5%;
     width: 90px;
-    height:90px;
-    display:inline-block;
-}
-.logo img{
-    width:100%;
+    height: 90px;
+    display: inline-block;
 }
 
-nav{
+.logo img {
+    width: 100%;
+}
+
+nav {
     display: inline-block;
-    padding-top:5%;
+    padding-top: 5%;
     /* float: right; */
 }
-nav ul li{
+
+nav ul li {
     list-style: none;
     display: inline-table;
     padding-top: 10%;
@@ -29,14 +33,16 @@ nav ul li{
     font-weight: bold;
 }
 
-nav ul li a{
+nav ul li a {
     font-family: 'Montserrat', sans-serif;
     font-weight: bold;
     font-size: 100%;
     color: #000;
     text-transform: uppercase;
 }
-nav ul li a:hover, .active{
+
+nav ul li a:hover,
+.active {
     color: #BDBDBD;
     text-decoration: none;
 }
@@ -44,22 +50,35 @@ nav ul li a:hover, .active{
 
 /* Modal Scripts*/
 
-    /* The Modal (background) */
+
+/* The Modal (background) */
+
 .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    padding-top: 100px;
+    /* Location of the box */
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
 }
 
+
 /* Modal Content */
+
 .modal-content {
     background-color: #fefefe;
     margin: auto;
@@ -68,7 +87,9 @@ nav ul li a:hover, .active{
     width: 60%;
 }
 
+
 /* The Close Button */
+
 .close {
     color: #aaaaaa;
     float: right;
@@ -83,21 +104,21 @@ nav ul li a:hover, .active{
     cursor: pointer;
 }
 
+
 /* Modal Scripts*/
 
-.containerx{
-    width:98%;
+.containerx {
+    width: 98%;
     margin: auto;
 }
 
-.abilityIframe{
+.abilityIframe {
     border: none;
 }
 
-.wrapper{
+.wrapper {
     width: 98%;
     margin: auto;
-
 }
 
 #containerHC {
@@ -107,36 +128,37 @@ nav ul li a:hover, .active{
     margin: 1em auto;
 }
 
-.findings{
+.findings {
     min-height: 550px;
-    background-color: rgb(129,74,155);
+    background-color: rgb(129, 74, 155);
     color: #ffffff;
-
 }
 
-.findings2{
+.findings2 {
     min-height: 450px;
-    background-color: rgb(47,178,178);
+    background-color: rgb(47, 178, 178);
     color: #ffffff;
-
 }
 
-.download{
+.download {
     min-height: 250px;
     background-color: #B0BEC4;
     color: #ffffff;
-
 }
 
-
-.findings .wrapper h3, .findings2 .wrapper h3, .download .wrapper h3{
+.findings .wrapper h3,
+.findings2 .wrapper h3,
+.download .wrapper h3 {
     font-weight: 400;
     text-align: center;
     font-size: 26px;
     margin-bottom: 5%;
     /* border-bottom: 2px solid #ffffff; */
 }
-.findings .wrapper h4, .findings2 .wrapper h4 , .download .wrapper h4{
+
+.findings .wrapper h4,
+.findings2 .wrapper h4,
+.download .wrapper h4 {
     font-weight: 400;
     text-align: center;
     font-size: 22px;
@@ -144,35 +166,37 @@ nav ul li a:hover, .active{
     /* border-bottom: 2px solid #ffffff; */
 }
 
-.findings .wrapper p, .findings2 .wrapper p, .download .wrapper p{
+.findings .wrapper p,
+.findings2 .wrapper p,
+.download .wrapper p {
     font-weight: 300;
     font-size: 20px;
     padding: 5px 5px;
 }
 
-.findings .wrapper ol{
+.findings .wrapper ol {
     list-style-type: circle;
 }
 
-.findings .wrapper ol li, .findings2 .wrapper ol li{
+.findings .wrapper ol li,
+.findings2 .wrapper ol li {
     display: block;
     font-weight: 300;
     font-size: 18px;
 }
 
-.chart{
+.chart {
     font-size: 65px;
     margin: auto;
     text-align: center;
 }
 
-.icon{
+.icon {
     width: 80px;
     height: 80px;
     border: 2px solid #fff;
     margin: auto;
     border-radius: 50%;
-
 }
 
 .icon i {
@@ -180,93 +204,101 @@ nav ul li a:hover, .active{
     margin-left: 20px;
     margin-top: 15px;
 }
-.viz .title{
+
+.viz .title {
     font-size: 18px;
     text-align: center;
     margin-top: 2px;
 }
-.viz p{
+
+.viz p {
     font-size: 15px !important;
     text-align: center;
     /* width: 80%; */
 }
 
-a .btn-stairo{
+a .btn-stairo {
     background: none;
-    border: 2px solid rgba(255,255,255, .5);
+    border: 2px solid rgba(255, 255, 255, .5);
     padding: 10px 5px;
 }
-a .btn-stairo:hover{
+
+a .btn-stairo:hover {
     background: none;
-    border: 2px solid rgba(255,255,255, 1);
+    border: 2px solid rgba(255, 255, 255, 1);
     padding: 10px 5px;
     transition: 2s;
 }
 
-.download a{
+.download a {
     color: #fff;
     text-decoration: none;
 }
 
+
 /* Styling our form */
-.button{
+
+.button {
     clear: both;
     margin: 20px auto;
 }
 
-.form-group{
+.form-group {
     margin: 10px auto;
     padding: 30px 0;
     clear: both;
     /* border-top: 1px solid rgba(61, 61, 61, 0.699);
     border-bottom: 1px solid rgba(61, 61, 61, 0.699); */
     height: auto;
-    min-height: 150px; 
+    min-height: 150px;
 }
-.form-group:hover{
+
+.form-group:hover {
     background: rgba(101, 119, 134, 0.0541);
     border-radius: 5px;
 }
 
-.form-group label{
-  font-size: 16px;
-  font-family: 'Montserrat', san-serif;
-  font-weight: 400;
+.form-group label {
+    font-size: 16px;
+    font-family: 'Montserrat', san-serif;
+    font-weight: 400;
 }
 
-.form-group input{
+.form-group input {
     font-size: 16px;
     font-family: 'Montserrat', san-serif;
     font-weight: 300;
-  }
+}
 
-.intro{
+.intro {
     padding: 5%;
     border-bottom: 1px solid #3d3d3d;
     margin-bottom: 5%;
 }
 
-.intro h3{
+.intro h3 {
     font-weight: 300;
     color: #3d3d3d;
     text-transform: capitalize;
     text-align: center;
-    padding-bottom:2%;
+    padding-bottom: 2%;
     border-bottom: .5px solid #000;
 }
 
-.intro p{
+.intro p {
     font-size: 18px;
     text-align: justify;
     font-weight: 300;
 }
 
-h4.type{
+h4.type {
     text-transform: capitalize;
 }
 
+
 /* Login form for verification */
-.login-form{
+
+.login-form {
     width: 80%;
     border: 1px solid #3d3d3d;
     position: fixed;
@@ -274,12 +306,12 @@ h4.type{
     left: 10%;
     /* margin-left: -25%; */
     background: #fefefe;
-    padding:5%;
+    padding: 5%;
     -webkit-backdrop-filter: blur(5px);
     backdrop-filter: blur(5px);
 }
 
-.login-form input{
+.login-form input {
     width: 100%;
     font-size: 16px;
     font-family: 'Montserrat', san-serif;
@@ -287,10 +319,11 @@ h4.type{
     height: 45px;
 }
 
-.login-form button{
+.login-form button {
     height: 45px;
 }
 
-.buildingsX, .streets{
-    display:none;
+.buildingsX,
+.streets {
+    display: none;
 }

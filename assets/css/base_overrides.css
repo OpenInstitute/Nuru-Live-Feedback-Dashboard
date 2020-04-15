@@ -1075,8 +1075,7 @@ label.noblock {
 
 /* Overrides by Kefuu */
 
-.linegraydot,
-.multiselecta {
+.linegraydot {
     border-bottom: 1px dotted #fff;
     background: rgba(246, 177, 30, .8);
     border-radius: 5px;
@@ -1115,7 +1114,7 @@ label.noblock {
 /* Give it some breathing space */
 
 .col-md-12.mapfeed {
-    margin-top: 2%;
+    margin-top: 1%;
     display: block;
     height: auto;
     max-height: 660px;
@@ -1137,11 +1136,14 @@ section.comments {
 /* Rekebisha nano */
 
 .nano .nano-content {
-    padding: 10px;
+    padding: 10px 0px 10px 10px;
+    width: 100% !important;
+    margin-right: 0 !important;
 }
 
 .nano .nano-pane {
-    background: rgb(246, 177, 30) !important;
+    /*background: rgb(246, 177, 30) !important;*/
+    background: rgb(255, 255, 255, 1) !important;
 }
 
 .nano .nano-slider {
@@ -1153,9 +1155,12 @@ section.comments {
 
 .comments-container {
     /* overflow-x: hidden; */
-    margin-top: 5%;
+    margin-top: 3px/*5%*/
+    ;
     background: rgba(205, 205, 205, .25);
-    height: 100%;
+    height: 95%;
+    /*100%*/
+    ;
     overflow: hidden;
 }
 
@@ -1169,7 +1174,8 @@ section.comments {
     padding: 0 0 1em;
     border-bottom: 1px solid #ddd;
     margin: 0 0 1em;
-    *zoom: 1;
+    zoom: 1;
+    cursor: pointer;
 }
 
 .comment-img {
@@ -1272,20 +1278,96 @@ section.comments {
 }
 
 
+/*
+Accordion Filter
+*/
+
+.accordion-box .panel-heading {
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.lebo_filta {
+    border-bottom: 1px dotted #ddd;
+    display: block;
+    padding: 3px 0px 3px 0px;
+    position: relative;
+    margin-right: -15px !important;
+}
+
+.lebo_filta .nom {
+    display: block;
+    padding-right: 20px;
+    padding-left: 18px;
+}
+
+.lebo_filta .nom_chk {
+    display: inline-block;
+    /* float: left; */
+}
+
+.lebo_filta .num_box {
+    background-color: rgba(246, 177, 30, 0.3)/*#F3F3F3*/
+    ;
+    color: #444;
+    border: 1px solid #ddd;
+    display: inline-block;
+    padding: 1px 3px;
+    position: absolute;
+    right: 0px;
+    top: 4px;
+    font-size: 90%;
+    font-weight: normal;
+}
+
+
 /* Selected filters */
 
 .selFilter {
-    background: #cdcdcd !important;
+    background: /*#cdcdcd*/
+    rgba(246, 177, 30, 0.8) !important;
+}
+
+.container.feedback {
+    width: 650px;
+}
+
+.message {
+    width: 100%;
+}
+
+.message p {
+    font-size: 14px;
+}
+
+#custom-map {
+    width: 450px;
+    height: 300px;
+}
+
+.imageDetail {
+    width: 450px;
+    height: auto;
+}
+
+.imageDetail img {
+    width: 100%
+}
+
+a.back {
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 5px;
 }
 
 
 /* Media Queries */
 
 @media only screen and (max-device-width: 768px) {
-    .col-md-12.mapfeed {
-        margin-top: 2%;
+    .nuru-intro .col-md-12.mapfeed {
+        margin-top: 5%;
         display: block;
-        height: auto;
+        min-height: 100%;
         overflow: initial;
     }
     section.comments {
