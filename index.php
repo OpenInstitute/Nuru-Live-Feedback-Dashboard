@@ -35,7 +35,7 @@ $col_keys['indoor'] = array(
 	<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">-->
 	<link rel="stylesheet" href="assets/js/bootstrap/css/bootstrap.3.3.7.min.css" type="text/css">
 	<link rel="stylesheet" href="assets/js/bootstrap/css/bootstrap-override.css" type="text/css">
-	<script src="https://code.jquery.com/jquery-3.4.0.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script> 
+	<script src="https://code.jquery.com/jquery-3.4.0.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
 	<!-- Mapbox dependencies -->
 	<script src='https://api.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.js'></script>
 	<link href='https://api.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.css' rel='stylesheet' />
@@ -59,13 +59,14 @@ $col_keys['indoor'] = array(
 
 	<!-- Gesturehandling -->
 	<link rel="stylesheet" href="//unpkg.com/leaflet-gesture-handling/dist/leaflet-gesture-handling.min.css" type="text/css">
-	
+
 	<!--<script src='http://tyrasd.github.io/osmtogeojson/osmtogeojson.js'></script>-->
-	
+
 	<link rel="stylesheet" type="text/css" href="assets/js/modal/jquery.modal.css">
 	<link rel="stylesheet" type="text/css" href="assets/css/base_overrides.css?v=1.0.3">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous" />	<link rel='stylesheet' id='mfn-fonts-css'  href='https://fonts.googleapis.com/css?family=Roboto%3A1%2C300%2C400%2C400italic%2C500%2C700%2C700italic%7CLora%3A1%2C300%2C400%2C400italic%2C500%2C700%2C700italic&#038;ver=5.3.2' type='text/css' media='all' />
-	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous" />
+	<link rel='stylesheet' id='mfn-fonts-css' href='https://fonts.googleapis.com/css?family=Roboto%3A1%2C300%2C400%2C400italic%2C500%2C700%2C700italic%7CLora%3A1%2C300%2C400%2C400italic%2C500%2C700%2C700italic&#038;ver=5.3.2' type='text/css' media='all' />
+
 	<!-- text rotator css -->
 	<link rel="stylesheet" href="assets/css/simpletextrotator.css" />
 
@@ -73,161 +74,201 @@ $col_keys['indoor'] = array(
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.nanoscroller/0.8.7/css/nanoscroller.css" integrity="sha256-7TSx6Ck89PYIn7aHChJ+u8MCr45+JcBVbKJ8ADoAQ+Y=" crossorigin="anonymous" />
 
 	<style type="text/css">
-		html, body { font-family: "Roboto", "Arial", "Sans-serif"; }
-		.pop_title {font-size: 15px;color: darkcyan;}
+		html,
+		body {
+			font-family: "Roboto", "Arial", "Sans-serif";
+		}
+
+		.pop_title {
+			font-size: 15px;
+			color: darkcyan;
+		}
+
 		/* @@ Rage -- Popup image styler */
-		.pop_photo { display: inline-block; width: 52; height: auto; max-height: 50px; overflow: hidden; border: 1px solid #ddd; }
-		.feed_markers { cursor: pointer; }
-		.map-legend-keys img { width: 14px; }
-		.map-legend-keys div { padding: 4px; }
-		hr.pop_line { margin-top: 10px; margin-bottom: 10px; border-top-width: 2px; }
+		.pop_photo {
+			display: inline-block;
+			width: 52;
+			height: auto;
+			max-height: 50px;
+			overflow: hidden;
+			border: 1px solid #ddd;
+		}
+
+		.feed_markers {
+			cursor: pointer;
+		}
+
+		.map-legend-keys img {
+			width: 14px;
+		}
+
+		.map-legend-keys div {
+			padding: 4px;
+		}
+
+		hr.pop_line {
+			margin-top: 10px;
+			margin-bottom: 10px;
+			border-top-width: 2px;
+		}
 	</style>
 </head>
 
 <body style="max-width:1600px; margin:auto;">
 
 
-<!-- Intro -->
-<div class="row clearfix">
-	<div class="col-md-12 nopadd top-bar">
-		<!-- we add search button -->
-		<div class="search-console">
-			<?php include("map_filter.php"); ?>
-		</div>
-		
-		
-	</div>
-</div>
-<!-- Intro -->
-
-<div class="row clearfix">
-	<div class="col-md-12 mapfeed">
-	
-		<div class="col-md-9 map">
-			<div class="nuru-intro">
-				<div class="col-md-6">
-					<h3>Nuru Map</h3>
-				</div>
-				<div class="col-md-offset-3 col-md-3 extras hide">
-					<span class="viewTable"><i class="fas fa-table"></i> View as table &middot; </span> <span class="expandViews"><i class="fas fa-expand-arrows-alt"></i> Expand</span>
-				</div>
+	<!-- Intro -->
+	<div class="row clearfix">
+		<div class="col-md-12 nopadd top-bar">
+			<!-- we add search button -->
+			<div class="search-console">
+				<?php include("maps/map_header.php"); ?>
 			</div>
 
-			<div id="gg_data_result" style=""></div>
-			<div id="map" style="height: 650px; border: 1px solid #AAA;"></div> 
-		</div>
 
-		<div class="col-md-3 nopadd comments">
+		</div>
+	</div>
+	<!-- Intro -->
+
+	<div class="row clearfix">
+		<div class="col-md-12 mapfeed">
+
+			<div class="col-md-2 map_filters">
+				<?php include("map_filter_side.php"); ?>
+				 
+			</div>
 			
-			<div class="nuru-intro2">
-				<h3>User Feedback</h3>
-			</div>
-			<div class="comments-container nano">
-				<div class="nano-content">
-					<section class="comments"></section>
+			<div class="col-md-3 nopadd comments">
+
+				<div class="nuru-intro2">
+					<h3>User Feedback</h3>
+				</div>
+				<div class="comments-container nano">
+					<div class="nano-content">
+						<section class="comments"></section>
+						
+					</div>
 				</div>
 			</div>
+
+			<div class="col-md-7 map">
+				<div class="nuru-intro">
+					<div class="col-md-6">
+						<h3>Nuru Map</h3>
+					</div>
+					<div class="col-md-offset-3 col-md-3 extras hide">
+						<span class="viewTable"><i class="fas fa-table"></i> View as table &middot; </span> <span class="expandViews"><i class="fas fa-expand-arrows-alt"></i> Expand</span>
+					</div>
+				</div>
+
+				<div id="gg_data_result" style=""></div>
+				<div id="map" style="height: 610px; border: 1px solid #AAA;"></div>
+			</div>
+
+			
+
 		</div>
-
 	</div>
-</div>
 
-<div class="row clearfix">
-	&nbsp;
-</div>
-
-<div class="col-md-12 bottomline hide">
-<p><strong>Remember to do the 5:</strong>  <i class="fas fa-hands-wash"></i> <i class="fas fa-head-side-cough"></i> <i class="fas fa-biohazard"></i> <i class="fas fa-people-arrows"></i> <i class="fas fa-house-user"></i> </p>
-<p><span class="rotate">  Wash hands, Cough into elbow, Don't touch your face, Keep a safe distance, , Stay home </span></p>
-</div>
-
-<div class="row clearfix hide">
-	<div class="col-md-12">
-		<div class="col-md-3"></div>
-		<div class="col-md-9"><h3 class="bold ">Nuru.live feedback Data</h3> </div>		
+	<div class="row clearfix">
+		&nbsp;
 	</div>
-	<div class="col-md-12">&nbsp;</div>
-	<div class="col-md-12">
-		<div id="box_res_table"></div>
+
+	<div class="col-md-12 bottomline hide">
+		<p><strong>Remember to do the 5:</strong> <i class="fas fa-hands-wash"></i> <i class="fas fa-head-side-cough"></i> <i class="fas fa-biohazard"></i> <i class="fas fa-people-arrows"></i> <i class="fas fa-house-user"></i> </p>
+		<p><span class="rotate"> Wash hands, Cough into elbow, Don't touch your face, Keep a safe distance, , Stay home </span></p>
 	</div>
-</div>
-  
 
-
-<script type="text/javascript" src="assets/js/bootstrap/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="assets/js/misc/jquery.slidetoggle.js"></script>
-<script type="text/javascript" src="assets/js/modal/jquery.modal.js" charset="utf-8"></script>
-<div class="modal fade" style="display:none;"></div>
-
-<script type="text/javascript" src="assets/js/oi_custom_table.js" charset="utf-8"></script>
-<!-- DataTables --> 
-<link type="text/css" rel="stylesheet" href="assets/js/datatable/jquery.dataTables.css" />
-<link type="text/css" rel="stylesheet" href="assets/js/datatable/jquery.dataTables.override.css" />
-<script type="text/javascript" src="assets/js/datatable/jquery.dataTables-1.10.19.min.js"></script>	
-<script type="text/javascript" src="assets/js/datatable/jquery.dataTables.colfilter.js"></script>	
-<script type="text/javascript" src="assets/js/datatable/dataTables.rowGroup.min.js"></script>	
-<script type="text/javascript" src="assets/js/datatable/dataTables.colReorder.min.js"></script>	
-<script type="text/javascript" src="assets/js/datatable/nested.tables.min.js"></script>
-<script type='text/javascript' src="assets/js/datatable/moment.js"></script>
-<script type="text/javascript" src="assets/js/datatable/datetime-moment.js"></script>
-
-
-<link rel="stylesheet" type="text/css" href="assets/js/datatable/buttons-1.10.13/dataTables.buttons.min.css">
-<script type="text/javascript" src="assets/js/datatable/buttons-1.10.13/dataTables.buttons.min.js"></script>
-
-<script type="text/javascript" language="javascript" src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
-<script type="text/javascript" language="javascript" src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js"></script>
-<script type="text/javascript" language="javascript" src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js"></script>
-<script type="text/javascript" language="javascript" src="assets/js/datatable/buttons-1.10.13/buttons.html5.min.js"></script>
-<script type="text/javascript" language="javascript" src="assets/js/datatable/buttons-1.10.13/buttons.colVis.min.js"></script>
-<script type="text/javascript" language="javascript" src="assets/js/datatable/buttons-1.10.13/buttons.print.min.js"></script>
-
-<!-- Nanoscroller -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nanoscroller/0.8.7/javascripts/jquery.nanoscroller.js" integrity="sha256-6As7QJOnBHo1fLCugEQD0nlUTG5LFMgo+PHtxv62GfU=" crossorigin="anonymous"></script>
+	<div class="row clearfix hide">
+		<div class="col-md-12">
+			<div class="col-md-3"></div>
+			<div class="col-md-9">
+				<h3 class="bold ">Nuru.live feedback Data</h3>
+			</div>
+		</div>
+		<div class="col-md-12">&nbsp;</div>
+		<div class="col-md-12">
+			<div id="box_res_table"></div>
+		</div>
+	</div>
 
 
 
-<!-- Text rotator -->
+	<script type="text/javascript" src="assets/js/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="assets/js/misc/jquery.slidetoggle.js"></script>
+	<script type="text/javascript" src="assets/js/modal/jquery.modal.js" charset="utf-8"></script>
+	<div class="modal fade" style="display:none;"></div>
 
-<script type="text/javascript" language="javascript" src="assets/js/jquery.simple-text-rotator.js"></script>
-
-<script>
-	$(".rotate").textrotator({
-	animation: "dissolve", // You can pick the way it animates when rotating through words. Options are dissolve (default), fade, flip, flipUp, flipCube, flipCubeUp and spin.
-	separator: ",", // If you don't want commas to be the separator, you can define a new separator (|, &, * etc.) by yourself using this field.
-	speed: 2000 // How many milliseconds until the next word show.
-	});
-</script>
-<!-- Text rotator -->
-
-<!-- Nano script -->
-<script>
-	$(".nano").nanoScroller({ scroll: 'top' });
-</script>
+	<script type="text/javascript" src="assets/js/oi_custom_table.js" charset="utf-8"></script>
+	<!-- DataTables -->
+	<link type="text/css" rel="stylesheet" href="assets/js/datatable/jquery.dataTables.css" />
+	<link type="text/css" rel="stylesheet" href="assets/js/datatable/jquery.dataTables.override.css" />
+	<script type="text/javascript" src="assets/js/datatable/jquery.dataTables-1.10.19.min.js"></script>
+	<script type="text/javascript" src="assets/js/datatable/jquery.dataTables.colfilter.js"></script>
+	<script type="text/javascript" src="assets/js/datatable/dataTables.rowGroup.min.js"></script>
+	<script type="text/javascript" src="assets/js/datatable/dataTables.colReorder.min.js"></script>
+	<script type="text/javascript" src="assets/js/datatable/nested.tables.min.js"></script>
+	<script type='text/javascript' src="assets/js/datatable/moment.js"></script>
+	<script type="text/javascript" src="assets/js/datatable/datetime-moment.js"></script>
 
 
-<script type="text/javascript"> 
-	var map = L.map( 'map', {
-		center: [-1.2967913, 36.8598615],
-		minZoom: 0,
-		zoom: 11,
-		maxZoom: 80,
-		// gestureHandling: true
-		scrollWheelZoom: false
-	});	
+	<link rel="stylesheet" type="text/css" href="assets/js/datatable/buttons-1.10.13/dataTables.buttons.min.css">
+	<script type="text/javascript" src="assets/js/datatable/buttons-1.10.13/dataTables.buttons.min.js"></script>
 
-	// Prevent map from zooming on mouse move
-	map.on('focus', function() {
-		if (map.scrollWheelZoom.enabled()) {
-			map.scrollWheelZoom.disable();
-		}
-		else {
-			map.scrollWheelZoom.enable();
-		}
-	});
+	<script type="text/javascript" language="javascript" src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+	<script type="text/javascript" language="javascript" src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js"></script>
+	<script type="text/javascript" language="javascript" src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js"></script>
+	<script type="text/javascript" language="javascript" src="assets/js/datatable/buttons-1.10.13/buttons.html5.min.js"></script>
+	<script type="text/javascript" language="javascript" src="assets/js/datatable/buttons-1.10.13/buttons.colVis.min.js"></script>
+	<script type="text/javascript" language="javascript" src="assets/js/datatable/buttons-1.10.13/buttons.print.min.js"></script>
 
-	// Add MarkerClusters - Kevin
-	function getRandomLatLng(map) {
+	<!-- Nanoscroller -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nanoscroller/0.8.7/javascripts/jquery.nanoscroller.js" integrity="sha256-6As7QJOnBHo1fLCugEQD0nlUTG5LFMgo+PHtxv62GfU=" crossorigin="anonymous"></script>
+
+
+
+	<!-- Text rotator -->
+
+	<script type="text/javascript" language="javascript" src="assets/js/jquery.simple-text-rotator.js"></script>
+
+	<script>
+		$(".rotate").textrotator({
+			animation: "dissolve", // You can pick the way it animates when rotating through words. Options are dissolve (default), fade, flip, flipUp, flipCube, flipCubeUp and spin.
+			separator: ",", // If you don't want commas to be the separator, you can define a new separator (|, &, * etc.) by yourself using this field.
+			speed: 2000 // How many milliseconds until the next word show.
+		});
+	</script>
+	<!-- Text rotator -->
+
+	<!-- Nano script -->
+	<script>
+		$(".nano").nanoScroller({
+			scroll: 'top'
+		});
+	</script>
+
+
+	<script type="text/javascript">
+		var map = L.map('map', {
+			center: [-1.2967913, 36.8598615],
+			minZoom: 0,
+			zoom: 11,
+			maxZoom: 80,
+			// gestureHandling: true
+			scrollWheelZoom: false
+		});
+
+		// Prevent map from zooming on mouse move
+		map.on('focus', function() {
+			if (map.scrollWheelZoom.enabled()) {
+				map.scrollWheelZoom.disable();
+			} else {
+				map.scrollWheelZoom.enable();
+			}
+		});
+
+		// Add MarkerClusters - Kevin
+		function getRandomLatLng(map) {
 			var bounds = map.getBounds(),
 				southWest = bounds.getSouthWest(),
 				northEast = bounds.getNorthEast(),
@@ -235,307 +276,294 @@ $col_keys['indoor'] = array(
 				latSpan = northEast.lat - southWest.lat;
 
 			return new L.LatLng(
-					southWest.lat + latSpan * Math.random(),
-					southWest.lng + lngSpan * Math.random());
+				southWest.lat + latSpan * Math.random(),
+				southWest.lng + lngSpan * Math.random());
 		}
 
-	var markers = L.markerClusterGroup();
-	// markers.addLayer(L.marker(getRandomLatLng(map)));
-// ... Add more layers ...
-	// map.addLayer(markers);
+		var markers = L.markerClusterGroup();
+		// markers.addLayer(L.marker(getRandomLatLng(map)));
+		// ... Add more layers ...
+		// map.addLayer(markers);
 
-	var mopt = {
-		url: '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-		options: {
-			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-			subdomains: ['a', 'b', 'c'],
-			id: 'mapbox.light'
-		}
-	};
+		var mopt = {
+			url: '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+			options: {
+				attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+				subdomains: ['a', 'b', 'c'],
+				id: 'mapbox.light'
+			}
+		};
 
-	var mq = L.tileLayer(mopt.url, mopt.options);
-	mq.addTo(map);
+		var mq = L.tileLayer(mopt.url, mopt.options);
+		mq.addTo(map);
 
-	var layer_main = L.layerGroup();
-	var layer_streets = L.layerGroup();
-
-
-	// Define polyline options
-	// http://leafletjs.com/reference.html#polyline
-	var polyline_options = {
-		color: '#9F5CCB',
-		weight: 7,
-		opacity: 0.8
-	};
+		var layer_main = L.layerGroup();
+		var layer_streets = L.layerGroup();
 
 
-	let map_data;
-	
-	var layer_postsMarkersList = [];
-	let postsMarkersObject = {};
+		// Define polyline options
+		// http://leafletjs.com/reference.html#polyline
+		var polyline_options = {
+			color: '#9F5CCB',
+			weight: 7,
+			opacity: 0.8
+		};
 
 
-	function getColor(d) {
-		return  d > 80 ? 'violet' :
+		let map_data;
+
+		var layer_postsMarkersList = [];
+		let postsMarkersObject = {};
+
+
+		function getColor(d) {
+			return d > 80 ? 'violet' :
 				d > 60 ? 'green' :
 				d > 40 ? 'yellow' :
 				d > 20 ? 'orange' :
-						'red';		
-	}
-
-		
-	function AddMarkerToMap(ma_point, ma_layer, ma_color = 'grey') {
-
-		//console.log(ma_point);
-		//var ma_color = (ma_type === 'indoor') ? 'blue' : 'green';
+				'red';
+		}
 
 
-		var my_coord = '' + ma_point.lat + ', ' + ma_point.lng + '';
-		var my_photo_link = (ma_point.photo !== '') ? '' + ma_point.photo_original + '' : '';
-		var my_photo = (my_photo_link !== '') ? '<hr class="pop_line"><a href="' + my_photo_link + '" target="_blank" class="pop_photo"><img src="' + my_photo_link + '" style="width:50px;" /></a>' : '';
-		var my_comments = (ma_point.comments !== '') ? '<b>Details:</b> ' + ma_point.comments + '' : '';
-		var my_icon = '';
-		var my_link = ' data-href="maps/nuru_point.php?id=' + ma_point.id + '" id="marka_' + ma_point.id + '" title="View Point Details" rel="modal:open"';
+		function AddMarkerToMap(ma_point, ma_layer, ma_color = 'grey') {
 
-		var my_popup = '<div><b class="pop_title"> ' + ma_point.name + '</b><br /><b>Entry Tags:</b> ' + ma_point.tags + '<br /><b>From:</b> ' + ma_point.post_by + '<br />'+ my_comments +'  ' + my_photo + ' </div>';
+			//console.log(ma_point);
+			//var ma_color = (ma_type === 'indoor') ? 'blue' : 'green';
 
 
-		var greenIcon = new L.Icon({
-			iconUrl: 'assets/image/marker-icon-green.png',
-			iconSize: [25, 41],
-			iconAnchor: [12, 41],
-			popupAnchor: [1, -34]
-			/*,
-						  shadowSize: [41, 41]*/
-		});
-		// Li.circleMarker 
-		
-		/* @@ Rage -- Add Title, riseOnHover, markerID, classname */
+			var my_coord = '' + ma_point.lat + ', ' + ma_point.lng + '';
+			var my_photo_link = (ma_point.photo !== '') ? '' + ma_point.photo_original + '' : '';
+			var my_photo = (my_photo_link !== '') ? '<hr class="pop_line"><a href="' + my_photo_link + '" target="_blank" class="pop_photo"><img src="' + my_photo_link + '" style="width:50px;" /></a>' : '';
+			var my_comments = (ma_point.comments !== '') ? '<b>Details:</b> ' + ma_point.comments + '' : '';
+			var my_icon = '';
+			var my_link = ' data-href="maps/nuru_point.php?id=' + ma_point.id + '" id="marka_' + ma_point.id + '" title="View Point Details" rel="modal:open"';
+
+			var my_popup = '<div><b class="pop_title"> ' + ma_point.name + '</b><br /><b>Entry Tags:</b> ' + ma_point.tags + '<br /><b>From:</b> ' + ma_point.post_by + '<br />' + my_comments + '  ' + my_photo + ' </div>';
+
+
+			var greenIcon = new L.Icon({
+				iconUrl: 'assets/image/marker-icon-green.png',
+				iconSize: [25, 41],
+				iconAnchor: [12, 41],
+				popupAnchor: [1, -34]
+				/*,
+							  shadowSize: [41, 41]*/
+			});
+			// Li.circleMarker 
+
+			/* @@ Rage -- Add Title, riseOnHover, markerID, classname */
 			var newMarker = new L.marker([parseFloat(ma_point.lat), parseFloat(ma_point.lng)], {
-				icon: greenIcon,
-				title: ma_point.name,
-				riseOnHover: 1,
-				markerID: ma_point.id,
-				className: 'marker_' + ma_point.id
-			})
-			.bindPopup(my_popup);
-							/*.addTo(ma_layer);*/
-		
+					icon: greenIcon,
+					title: ma_point.name,
+					riseOnHover: 1,
+					markerID: ma_point.id,
+					className: 'marker_' + ma_point.id
+				})
+				.bindPopup(my_popup).on('click', clickZoom);
+			 /*.on('click', clickZoom)*/
+
 			/* @@ Rage -- Add Markers to markersArray */
-			postsMarkersObject['marker_' + ma_point.id] = newMarker;		
+			postsMarkersObject['marker_' + ma_point.id] = newMarker;
 			layer_postsMarkersList.push(newMarker);
 			ma_layer.addLayer(newMarker);
 
-		/*return ma_layer.addTo(map);*/
-		
-		/* @@ Rage -- Add layer to map */
-		return map.addLayer(ma_layer);
-	}
+			/*newMarker._popup.setLatLng(map.getBounds().getCenter());*/
+			 
+			/* @@ Rage -- Add layer to map */
+			return map.addLayer(ma_layer);
+		}
 
-	
-	/* @@ Rage -- POST CLICK IN-MAP POPUP */
-	function openPopupCustom(marker_id) {
-		jQuery(document).ready(function($) {
-			postsMarkersObject["" + marker_id + ""].openPopup();
-			jQuery("body,html").animate({
-				scrollTop: 0
-			}, 800);
-		});
-	}
-	
-	
-	
-	function rageMappa(de_file, de_layer, de_color) {
 
-		jQuery(document).ready(function($) {
-
-			$.ajax({
-				type: 'get',
-				url: de_file,
-				dataType: 'json',
-				success: function(data) {
-
-					var mapsData = data; /*//JSON.parse(data);*/
-					var markers_a = mapsData.features;					
-					map_data = mapsData.table;
-					
-					for (var i = 0; i < markers_a.length; i++) {
-						var ma_point = markers_a[i].properties; 
-						var m_color = getColor(ma_point['perc_access']);
-
-						AddMarkerToMap(ma_point, de_layer, m_color);
-					}
-					
-					rageTable(map_data, "Posts List", 1);
-
-				}
+		/* @@ Rage -- POST CLICK IN-MAP POPUP */
+		function clickZoom(e) {
+			map.setView(e.target.getLatLng(),11);
+		}
+		function openPopupCustom(marker_id) {
+			jQuery(document).ready(function($) {
+				postsMarkersObject["" + marker_id + ""].openPopup();
+				jQuery("#map").animate({
+					/*body,html*/
+					scrollTop: 0
+				}, 800);
 			});
-		});
+		}
 
-	}
+		/*map.flyTo(new L.LatLng(lat, lng), zoom, {
+									duration: 1.5
+								});*/
 
-	rageMappa('maps/nuru_json.php', layer_main, 'indoor');
 
-	
-	function rageTable(tbl_data, tbl_title, $level){
-		
-		jQuery(document).ready(function($) {
-			var table_res = $.makeTable(tbl_data, tbl_title, $level);
-			$("#box_res_table").html(''); 
-			$(table_res).appendTo("#box_res_table");
-			zul_DataTable();
-		});
-	}
 
-	// Display the results as comments - Kevin 30th Mar 2020
-	var data = '';
-	function comments(data){
-		let e = (typeof(data) !== 'undefined') ? data : '';
-		let link = "maps/nuru_json.php?tag="+e;
-		
-		jQuery(document).ready(function($) {
-			$.ajax({
-				type: 'get',
-				url: link,
-				dataType: 'json',
+		function rageMappa(de_file, de_layer, de_color) {
 
-				success: function(output){
-					// console.log(output);
-					let data = output.features;
-					let len = data.length;
-					let content = '';
+			jQuery(document).ready(function($) {
 
-					let lat = '';
-					let lng = '';
+				$.ajax({
+					type: 'get',
+					url: de_file,
+					dataType: 'json',
+					success: function(data) {
 
-					for(var c = 0; c < len; c++){
-						let record_id = data[c].properties.id;
-						let comment = data[c].properties.comments;
-						let author = data[c].properties.post_by;
-						let time = data[c].properties.name;
+						var mapsData = data; /*//JSON.parse(data);*/
+						var markers_a = mapsData.features;
+						map_data = mapsData.table;
 
-						let lat = data[c].properties.lat;
-						let lng = data[c].properties.lng;
-						let tags = data[c].properties.tags;
+						for (var i = 0; i < markers_a.length; i++) {
+							var ma_point = markers_a[i].properties;
+							var m_color = getColor(ma_point['perc_access']);
 
-						let photo = data[c].properties.photo;
-						let photo_original = data[c].properties.photo_original;
+							AddMarkerToMap(ma_point, de_layer, m_color);
+						}
 
-						// alert(photo.length);
-						var img	= '';
-						var imgx	= '';
-						
-						if(photo.length !== 0){
-							/*img = '<img src="'+ photo +'" alt="Image from '+ author +'" style="width: 90%; margin: auto">';*/
-							img = '<a class="comment-img" href="'+photo_original+'" target="_blank"> <img src="'+ photo +'" alt="Image from '+ author +'" width="50" height="50"></a>';
-						} 
+						rageTable(map_data, "Posts List", 1);
 
-						var findOnMap = '';
-						
-						//console.log("lat", lat.length + " - " + data[c].properties.lat + " - long: " + data[c].properties.lng);
-						
-						if(lat != "0"){ /* href="javascript:void(0);"*/
-							findOnMap = '&middot <a class="clickyx feed_markers" data-id="marker_'+record_id+'" data-href="posts.php?lat='+lat+'&lng='+lng+'&name=latlong" ><em> <strong><i class="far fa-dot-circle"></i> Find on map</strong></em></a>';
-						} 
-						
-						/* <hr/> <p>'+ img +'</p> */
-						content += '<article class="comment">'+ img +'<div class="comment-body"> <div class="text"><p>' + comment + '</p>  </div> <p class="attribution"> <i class="fas fa-user-alt"></i> <a href="#non">' + author + '</a> &middot; <i class="far fa-clock"></i> ' +time + ' '+ findOnMap +'</a></p> <p class="padd10_t txt12"> <smallx><em><strong>Tags: </strong> '+ tags +'</em></smallx> </p></div></article>';
 					}
-				
-					// console.log(data);
-					$('section.comments').html(content);
-
-					// alert(data);
-					// alert(data.features.0.properties.name);
-					
-				}
+				});
 			});
-		});
-		
-	}
 
-	setInterval(comments(data), 100);
+		}
+
+		rageMappa('maps/nuru_json.php', layer_main, 'indoor');
+
+
+		function rageTable(tbl_data, tbl_title, $level) {
+
+			jQuery(document).ready(function($) {
+				var table_res = $.makeTable(tbl_data, tbl_title, $level);
+				$("#box_res_table").html('');
+				$(table_res).appendTo("#box_res_table");
+				zul_DataTable();
+			});
+		}
+
+
+		// Display the results as comments - Kevin 30th Mar 2020
+		var data = '';
+
+		function comments(data) {
+			 
+			let e = (typeof(data) !== 'undefined') ? data : '';
+			let link = "maps/nuru_json.php?tag=" + e;
+
+			jQuery(document).ready(function($) {
+				$.ajax({
+					type: 'get',
+					url: link,
+					dataType: 'json',
+
+					success: function(output) {
+						// console.log(output);
+						let data = output.features;
+						let len = data.length;
+						let content = '';
+
+						let lat = '';
+						let lng = '';
+
+						for (var c = 0; c < len; c++) {
+							let record_id = data[c].properties.id;
+							/*let comment = data[c].properties.comments;*/
+							let comment = data[c].properties.comments_trim;
+							let author = data[c].properties.post_by;
+							let time = data[c].properties.name;
+
+							let lat = data[c].properties.lat;
+							let lng = data[c].properties.lng;
+							let tags = data[c].properties.tags;
+
+							let photo = data[c].properties.photo;
+							let photo_original = data[c].properties.photo_original;
+
+							// alert(photo.length);
+							var img = '';
+							var imgx = '';
+
+							if (photo.length !== 0) {
+								/*img = '<img src="'+ photo +'" alt="Image from '+ author +'" style="width: 90%; margin: auto">';*/
+								img = '<a class="comment-img" href="' + photo_original + '" target="_blank"> <img src="' + photo + '" alt="Image from ' + author + '" width="50" height="50"></a>';
+							}
+
+							var findOnMap = '';
+
+							//console.log("lat", lat.length + " - " + data[c].properties.lat + " - long: " + data[c].properties.lng);
+
+							if (lat != "0") {
+								/* href="javascript:void(0);"*/
+								/* data-href="posts.php?lat=' + lat + '&lng=' + lng + '&name=latlong"*/
+								findOnMap = '&middot <a class="feed_markers" data-id="marker_' + record_id + '" ><em> <strong><i class="far fa-dot-circle"></i> Find on map</strong></em></a>';
+							}
+
+							/* <hr/> <p>'+ img +'</p> */
+							content += '<article class="comment">' + img + '<div class="comment-body"> <div class="text"><p>' + comment + '</p>  </div> <p class="attribution"> <i class="fas fa-user-alt"></i> <a href="#non">' + author + '</a> &middot; <i class="far fa-clock"></i> ' + time + ' ' + findOnMap + '</a></p> <p class="padd10_t txt12"> <smallx><em><strong>Tags: </strong> ' + tags + '</em></smallx> </p></div></article>';
+						}
+
+						// console.log(data);
+						$('section.comments').html(content + '<p>&nbsp;</p><p>&nbsp;</p>');
+
+						// alert(data);
+						// alert(data.features.0.properties.name);
+
+					}
+				});
+			});
+
+		}
+
+		//setInterval(comments(data), 100);
 
 		// Pan to selected coordinate
-	
-	
-	
-	
+
+
+
+
 		jQuery(document).ready(function($) {
 			
-			jQuery(document).on('click', '.feed_markers', function(e){		 
-				var marker_id = jQuery(this).attr("data-id");  
+			comments("");
+			jQuery(document).on('click', '.feed_markers', function(e) {
+				var marker_id = jQuery(this).attr("data-id");
 				openPopupCustom(marker_id);
 			});
-			
-			
-				$(document).on('click', '.clicky', function(e){
-					e.preventDefault();
-				let lnk = $(this).attr('data-href');
-				// alert(lnk);
-
-					$.ajax({
-						type: 'get',
-						url: lnk,
-						dataType: 'json',
-
-						success: function(e){
-							lat = e.lat;
-							lng = e.lng;
-							zoom=18;
-
-							// alert('Latitude' + lat + ' . Long: ' + lng + 'Zoom: ' + zoom);
-
-							// map.setView(new L.LatLng(lat, lng), zoom);
-							// map.panBy(L.point(lat, lng));
-
-							map.flyTo(new L.LatLng(lat, lng), zoom, {
-								duration: 1.5
-							});
-							
-
-
-						}
-					});
-
-				});
+ 
 		});
 
 		// Add a checkbox to select multiple
 
-	
-	
-	
+
+
+
 		/* @@Rage --- function to remove element from object */
-		function arrayRemove(arr, value) { return arr.filter(function(ele){ return ele != value; });}
-	
+		function arrayRemove(arr, value) {
+			return arr.filter(function(ele) {
+				return ele != value;
+			});
+		}
+
 		/* @@Rage -- Tag click function */
 		var tags = [""];
 		var opts = [];
-	
-		$('.nom').on('click', function(x){
-				 
-				$(this).toggleClass('selFilter');
-			
-				var nom_val = $(this).text().trim();
-				if($(this).hasClass("selFilter")){			
-					$(this).parent().addClass("selFilter");
-					opts.push(nom_val);					
-				} else {
-					$(this).parent().removeClass("selFilter");
-					var resul = arrayRemove(opts, nom_val);
-					opts = resul;
-				} 
-				
-				console.log("nom_value", opts); 
-			
-				let res = JSON.stringify(opts); 
-				let results = comments(btoa(res)); /* base63_encode the string */
-				 
-				setInterval(results, 100);
-			}); 
- 
 
+		$('.nom').on('click', function(x) {
+
+			$(this).toggleClass('selFilter');
+
+			var nom_val = $(this).text().trim();  
+			if ($(this).hasClass("selFilter")) {
+				//$(this).parent().addClass("selFilter");
+				opts.push(nom_val);
+			} else {
+				//$(this).parent().removeClass("selFilter");
+				var resul = arrayRemove(opts, nom_val);
+				opts = resul;
+			}
+
+			/*console.log("nom_value", opts);*/
+
+			let res = JSON.stringify(opts);
+			//let results = comments(btoa(res)); /* base63_encode the string */
+			//setInterval(results, 100);
+			
+			comments(btoa(res));
+		});
 	</script>
 
 
@@ -551,9 +579,6 @@ $col_keys['indoor'] = array(
 				}
 			});
 
-			//gg_data_search(layer_main, 'indoor');
-
-
 			jQuery(document).on('click', '.panel-heading span.clickable', function(e) {
 				var $this = $(this);
 				if (!$this.hasClass('panel-collapsed')) {
@@ -567,9 +592,9 @@ $col_keys['indoor'] = array(
 				}
 			})
 
-			$(document).on('change', '.gg_checks', function(e) {
+			/*$(document).on('change', '.gg_checks', function(e) {
 				gg_data_search(layer_main, 'indoor');
-			});
+			});*/
 
 		});
 
@@ -618,112 +643,117 @@ $col_keys['indoor'] = array(
 				});
 			});
 		}
-		
-		
-		function kbModalLoaded() {
-		}
-		
-		
-		
-function zul_DataTable() {
-	jQuery(document).ready(function($) {		
-		
-		//alert("Ninii " + groupTotals);
-		
-		/*//DATA TABLE*/
-		$.fn.dataTable.moment( 'MMM D YYYY' );
-		$.fn.dataTable.moment( 'YYYY-MMMM' );
-		$.fn.dataTable.moment( 'YYYY-MMM' );
-		$.fn.dataTable.moment( 'YYYY-MMM-DD' );
-		
-		var tb_grouped = $('#gg_data_tb').length; 
-		
-		if( $('table.display').length  ) { 
-				 
-				var col_filter_tag  = (jQuery('#dt_example').length && jQuery('#dt_example').attr('data-col-filter') !== undefined) ? jQuery('#dt_example').attr('data-col-filter') : "";
-				var	col_filter 		= (col_filter_tag !== "") ? col_filter_tag.split(",") : ""; 
-				 
-				var col_total_tag  = (jQuery('#dt_example').length && jQuery('#dt_example').attr('data-col-total') !== undefined) ? jQuery('#dt_example').attr('data-col-total') : "";
-				var	col_total 		= (col_total_tag !== "") ? col_total_tag.split(",") : ""; 
-				
-				dta_table = jQuery('table.display').dataTable({
-					"bProcessing": true
-					, destroy: true
-					, "bJQueryUI": true
-					, "bInfo": true
-					, "sPaginationType": "full_numbers"
-					, "bStateSave": false 
-					/*, "columnDefs": [{"targets" : 'no-sort', "orderable": false }, { "render": function ( data, type, full, meta ){ return display_decimal(data) }, "targets" : 'ddt' }]*/
-					, "aaSorting":  []					
-					, "iDisplayLength": 10 
-					, "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]]
-					, "scrollX": true					
-					, dom: 'Blfrtip'
-					, buttons: [ 'print','csvHtml5']
-					, initComplete: function () {
-						var num_cols = this.api().columns().nodes().length; 
-						
-						if(col_filter !== "")
-						{
-							this.api().columns().every( function (tb_col) {
-								var column = this; 			 
-								var col_id = col_filter.includes(tb_col.toString());	
-								 
-								if(col_id === true){
-									var select = $('<select><option value=""></option></select>')
-										.appendTo( $(column.footer())/*.empty()*/ )
-										.on( 'change', function () {
-											var val = $.fn.dataTable.util.escapeRegex($(this).val());
-											column.search( val ? '^'+val+'$' : '', true, false ).draw();
-										});
 
-									column.data().unique().sort().each( function ( d, j ) {
-										select.append( '<option value="'+d+'">'+d+'</option>' )
-									});
-								}
+
+		function kbModalLoaded() {}
+
+
+
+		function zul_DataTable() {
+			jQuery(document).ready(function($) {
+
+				//alert("Ninii " + groupTotals);
+
+				/*//DATA TABLE*/
+				$.fn.dataTable.moment('MMM D YYYY');
+				$.fn.dataTable.moment('YYYY-MMMM');
+				$.fn.dataTable.moment('YYYY-MMM');
+				$.fn.dataTable.moment('YYYY-MMM-DD');
+
+				var tb_grouped = $('#gg_data_tb').length;
+
+				if ($('table.display').length) {
+
+					var col_filter_tag = (jQuery('#dt_example').length && jQuery('#dt_example').attr('data-col-filter') !== undefined) ? jQuery('#dt_example').attr('data-col-filter') : "";
+					var col_filter = (col_filter_tag !== "") ? col_filter_tag.split(",") : "";
+
+					var col_total_tag = (jQuery('#dt_example').length && jQuery('#dt_example').attr('data-col-total') !== undefined) ? jQuery('#dt_example').attr('data-col-total') : "";
+					var col_total = (col_total_tag !== "") ? col_total_tag.split(",") : "";
+
+					dta_table = jQuery('table.display').dataTable({
+						"bProcessing": true,
+						destroy: true,
+						"bJQueryUI": true,
+						"bInfo": true,
+						"sPaginationType": "full_numbers",
+						"bStateSave": false
+							/*, "columnDefs": [{"targets" : 'no-sort', "orderable": false }, { "render": function ( data, type, full, meta ){ return display_decimal(data) }, "targets" : 'ddt' }]*/
+							,
+						"aaSorting": [],
+						"iDisplayLength": 10,
+						"aLengthMenu": [
+							[5, 10, 25, 50, 100, -1],
+							[5, 10, 25, 50, 100, "All"]
+						],
+						"scrollX": true,
+						dom: 'Blfrtip',
+						buttons: ['print', 'csvHtml5'],
+						initComplete: function() {
+							var num_cols = this.api().columns().nodes().length;
+
+							if (col_filter !== "") {
+								this.api().columns().every(function(tb_col) {
+									var column = this;
+									var col_id = col_filter.includes(tb_col.toString());
+
+									if (col_id === true) {
+										var select = $('<select><option value=""></option></select>')
+											.appendTo($(column.footer()) /*.empty()*/ )
+											.on('change', function() {
+												var val = $.fn.dataTable.util.escapeRegex($(this).val());
+												column.search(val ? '^' + val + '$' : '', true, false).draw();
+											});
+
+										column.data().unique().sort().each(function(d, j) {
+											select.append('<option value="' + d + '">' + d + '</option>')
+										});
+									}
+								});
+							}
+
+
+						},
+						drawCallback: function() {
+							var api = this.api();
+							if (col_total !== "") {
+								this.api().columns().every(function(tb_col) {
+									var column = this;
+									var col_id = col_total.includes(tb_col.toString());
+
+									if (col_id === true) {
+										var col_sum = api.column(tb_col.toString(), {
+											page: 'current'
+										}).data().sum();
+										$(column.footer()).html(display_decimal(col_sum));
+										/*$( api.table().footer() ).html(
+											api.column( tb_col.toString(), {page:'current'} ).data().sum()
+										  );*/
+									}
+								});
+							}
+						}
+					});
+
+				}
+
+
+
+				if ($('#check_all').length) {
+					$('#check_all').on("change", function() {
+						if ($(this).is(':checked')) {
+							$('.dtb_chk').each(function() {
+								$(this).attr("checked", true);
+							});
+						} else {
+							$('.dtb_chk').each(function() {
+								$(this).attr("checked", false);
 							});
 						}
-						
-						
-					}
-					, drawCallback: function () {
-						var api = this.api();
-						if(col_total !== "")
-						{
-							this.api().columns().every( function (tb_col) {
-								var column = this; 			 
-								var col_id = col_total.includes(tb_col.toString());	
-								 
-								if(col_id === true){
-									var col_sum = api.column( tb_col.toString(), {page:'current'} ).data().sum();  									 
-									$(column.footer()).html(display_decimal(col_sum));
-									/*$( api.table().footer() ).html(
-										api.column( tb_col.toString(), {page:'current'} ).data().sum()
-									  );*/
-								}
-							});
-						} 
-					}
-				});
-				 
-			}
-		 
-		
-		
-		if( $('#check_all').length ) { 
-			$('#check_all').on("change", function() {
-			  if ($(this).is(':checked')) {
-				$('.dtb_chk').each(function () { $(this).attr("checked", true); });
-			  } else {
-				 $('.dtb_chk').each(function () { $(this).attr("checked", false); });  
-			  }
+					});
+				}
+
 			});
 		}
-		
-	});	
-}
-
-
 	</script>
 
 
