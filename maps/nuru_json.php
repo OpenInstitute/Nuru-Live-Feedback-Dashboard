@@ -21,68 +21,40 @@ switch ($sel_cat)
 	
 		
 	case "loctn":
+
+		// Add country to the equation
+		$country = '';
+
+		if(!empty($_GET['country'])){
+			$country = '%'.$_GET['country'].'%';
+		}else{
+			$country = '%';
+		}
 		
 		/* ========================================================================= */
 		
 		/* @@Rage -- Tag search */
-		$tags_crit = "";
+		$tags_crit = "WHERE `ort_posts`.`published` = 1 AND `ort_posts`.`post_country` like '$country'";
 		if(!empty($sel_ops['tag'])){
 			$tags_arr  = json_decode(base64_decode($sel_ops['tag'])); 
 			
 			if(count($tags_arr) > 0){
 				foreach($tags_arr as $vvals){		
-					$ccrit[] = " `ort_posts`.`post_tag` like ". q_si($vvals, 1) ." ";			
+					$ccrit[] = " `ort_posts`.`post_tag` like ". q_si($vvals, 1) ."  AND `ort_posts`.`published` = '1'";			
 				}
-				$tags_crit = " WHERE " . implode(" or ", $ccrit ) ;
+				$tags_crit = " WHERE " . implode(" OR ", $ccrit ). "  " ;
 			}
 		} 
 		/* END @@Rage -- Tag search */
-		
-		
-		
-		
-
-		$sq_crit = (count($ccrit) > 0) ? ' and '. implode(' and ', $ccrit) : ''; 
+		 
 
 		/* @@ Rage -- Image Extentions */
 		$image_extenstions = array('jpg', 'jpeg', 'png', 'gif');
 
-		// Get tag
-//		$tg = '';
-//		$tag = '';
-//
-//		if(!empty($_GET['tag'])){
-//			$tg = $_GET['tag'];
-//		} else{ 
-//		}
 
-
-		//$strTags = (strpos($tg, ',')) ? str_replace(' , ', '","', $tg) : $tg; 
-		// displayArray($strTags); exit;
-		// $strTags .= '"'.$strTags.'"';
+		$qry = "SELECT `ort_posts`.*, `ort_resources_table`.`res_file_url`, `ort_resources_table`.`res_file_name`, `ort_posts`.`post_entry_id` as `the_entry_id` FROM `ort_posts` left join `ort_resources_table` on  `ort_posts`.`user_id` =  `ort_resources_table`.`user_id`  and `ort_posts`.`post_session` =  `ort_resources_table`.`post_session`  ".$tags_crit."  group by `ort_posts`.`post_entry_id` order by `ort_posts`.`post_entry_id` DESC;";
 		
-		// A little voodoo to enable our filters to work
-		// $tag = (!empty($tg)) ? " WHERE `post_tag` = ".q_si($tg, 1)." ": ""; 
-		//$tag = (!empty($strTags)) ? " WHERE `ort_posts`.`post_tag` like ".q_si($strTags, 1)." ": ""; 
-		// displayArray($tag); 
-
-
-		// $qry = "SELECT * FROM `ort_posts` WHERE `post_longitude` is not null and  `post_latitude` is not null  order by `post_entry_id` DESC;";
-		// $qry = "SELECT * FROM `ort_posts` WHERE `post_longitude` is not null and  `post_latitude` is not null  and `post_tag` like '$tag' order by `post_entry_id` DESC;";
-		//$qry = "SELECT * FROM `ort_posts`  ".$tag." order by `post_entry_id` DESC;";
-		
-		// and `ort_posts`.`post_session` =  `ort_resources_table`.`post_session` 
-		// $qry = "SELECT `ort_posts`.*, `ort_resources_table`.* FROM `ort_posts` 
-		// 	left join `ort_resources_table` on  `ort_posts`.`user_id` =  `ort_resources_table`.`user_id`  and `ort_posts`.`post_session` =  `ort_resources_table`.`post_session` 
-		// 	".$tags_crit." group by `ort_posts`.`post_entry_id` order by `ort_posts`.`post_entry_id`  DESC;";
-
-		// Kev Update to disable unpublished comments
-
-		$qry = "SELECT `ort_posts`.*, `ort_resources_table`.* FROM `ort_posts` 
-			left join `ort_resources_table` on  `ort_posts`.`user_id` =  `ort_resources_table`.`user_id`  and `ort_posts`.`post_session` =  `ort_resources_table`.`post_session`
-			where `ort_posts`.`published` = 1 ".$tags_crit." group by `ort_posts`.`post_entry_id` order by `ort_posts`.`post_entry_id` DESC;";
-		
-		//  displayArray($qry); exit;
+		// echobr($qry);
 
 		if(!empty($sel_ops['dbg'])){
 			echobr($qry);
@@ -96,6 +68,8 @@ switch ($sel_cat)
 		$map_data 	= array(); 
 		$map_recs 	= array(); 
 		
+		$rec_grouped = array(); 
+		
 		$domain_path = 'https://nuru.live/dashboard/';
 		$domain_path_rage = 'http://localhost/oireporting_web/';
 		
@@ -103,33 +77,39 @@ switch ($sel_cat)
 		while($row_a = $cndb->fetchRow($res, "assoc"))
 		{
 			$row  	= array_map("clean_output", $row_a);	
-			/*displayArray($row); exit;*/	
+			/*displayArray($row); //exit;	*/
 			/*$coords = explode(',', $row['LatLong']);*/
 
-			$post_latitude = floatval($row['post_latitude']);
-			$post_longitude = floatval($row['post_longitude']);
-			$coords = array($post_latitude, $post_longitude);
-
-			//if(!empty($coords[1]))
-			//{
-				/*$coords[0] = floatval($coords[0]);
-				$coords[1] = floatval($coords[1]);*/
+			$post_latitude 		= floatval($row['post_latitude']);
+			$post_longitude 	= floatval($row['post_longitude']);
+			$coords 			= array($post_latitude, $post_longitude); 
 				
 				 
-				$id					= $row['post_entry_id'];
-				$post_session		= $row['post_session'];
+			//$id					= $row['post_entry_id'];
+			$id					= $row['the_entry_id'];
+			$post_session		= $row['post_session'];
+			$post_by_full		= trim($row['user_id']);
+
+			/* @@ Rage - unique_post_key */
+			$post_key			= $id.'_'.$post_session;
+			$user_entry_key		= $post_by_full.'_'.$post_session;
+
+			$post_description	= $row['post_description'];
+			$post_tag			= $row['post_tag'];
+			$post_photo_trim    = str_replace($domain_path, "", $row['res_file_url']);
+			$post_photo_trim    = str_replace($domain_path_rage, "", $post_photo_trim);
 			
-				/* @@ Rage - unique_post_key */
-				$post_key			= $id.'_'.$post_session;
+			$post_country		= $row['post_country'];
+			$post_country_code	= $row['post_country_code'];
+			$post_country_flag	= ($post_country_code !== '') ? DISP_IMAGES.'flags/'.$post_country_code .'.png' : '';
+
+			/*echobr(SITE_PATH.$post_photo_trim);*/			
+			$post_photo_thumb 	= '';
 			
-				$post_description	= $row['post_description'];
-				$post_tag			= $row['post_tag'];
-				$post_photo_trim    = str_replace($domain_path, "", $row['res_file_url']);
-				$post_photo_trim    = str_replace($domain_path_rage, "", $post_photo_trim);
-			
-				/*echobr(SITE_PATH.$post_photo_trim);*/			
-				$post_photo_thumb 	= '';
-			
+			$post_published		= $row['published'];
+
+			//if(!array_key_exists($user_entry_key, $rec_grouped) ) /*and $post_by_full !== ''*/
+			//{	
 				/* @@ Rage -- Check if image exists */
 				if (file_exists(SITE_PATH.$post_photo_trim)) { 					
 					$photo_ext			= getFileExtension($post_photo_trim);
@@ -147,14 +127,15 @@ switch ($sel_cat)
 					
 				$post_photo			= ($row['res_file_url'] !== "") ? $row['res_file_url'] : "";
 				$post_date_device	= date("Y-F-d H:i", strtotime($row['post_date_device'])); //$row['post_date_device'];
-				$post_by_full		= trim($row['user_id']);
+				
 				$user_em_check		= strpos($post_by_full,'@');
 				$post_by			= ($user_em_check) ? ucwords(substr($post_by_full, 0, $user_em_check)) : '';
 				$post_date			= date("Y-F-d", $row['post_date_web']);
 				 
 				$post_tag 			= str_replace('|', ", ", substr($post_tag, 0, -1) );
 				
-				$post_description_trim = smartTruncateNew($post_description, 75);
+				
+				$post_description_trim = smartTruncateNew($post_description, 150);
 				
 				$map_data[$i]['type'] = 'Feature';
 				$map_data[$i]['id'] = $post_key; /* $id */
@@ -173,6 +154,9 @@ switch ($sel_cat)
 					'photo_original' 	=> ''.$post_photo_trim.'',
 					'entity_code' 		=> $post_session,
 					'tags' 		=> ''.$post_tag.'',
+					'country' 	=> $post_country,
+					'country_code' 		=> $post_country_code,
+					'country_flag' 		=> $post_country_flag,
 					'lat' 		=> $post_latitude,
 					'lng' 		=> $post_longitude
 				);
@@ -198,6 +182,7 @@ switch ($sel_cat)
 					'coordinates' 	=> $coords
 				);
 
+				$rec_grouped[$post_by_full .'_'. $post_session] = $post_key;
 
 				$i++;
 			//}
@@ -207,6 +192,7 @@ switch ($sel_cat)
 		 
 		$markers_b = array("type" => "FeatureCollection", "features" => $map_data, "table" => $map_recs);
 
+		/*displayArray($markers_b);*/
 		echo json_encode($markers_b);
 		/* ========================================================================= */
 		
