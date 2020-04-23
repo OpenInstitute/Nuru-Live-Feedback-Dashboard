@@ -3,9 +3,7 @@ require_once 'classes/cls.constants.php';
 //include_once 'z_head.php'; 
 
 $col_keys = array();
-$col_keys['indoor'] = array(
-	
-);
+$col_keys['indoor'] = array();
 ?>
 
 
@@ -63,7 +61,7 @@ $col_keys['indoor'] = array(
 	<!--<script src='http://tyrasd.github.io/osmtogeojson/osmtogeojson.js'></script>-->
 
 	<link rel="stylesheet" type="text/css" href="assets/js/modal/jquery.modal.css">
-	<link rel="stylesheet" type="text/css" href="assets/css/base_overrides.css?v=1.0.3">
+	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous" />
 	<link rel='stylesheet' id='mfn-fonts-css' href='https://fonts.googleapis.com/css?family=Roboto%3A1%2C300%2C400%2C400italic%2C500%2C700%2C700italic%7CLora%3A1%2C300%2C400%2C400italic%2C500%2C700%2C700italic&#038;ver=5.3.2' type='text/css' media='all' />
 
@@ -112,11 +110,12 @@ $col_keys['indoor'] = array(
 			border-top-width: 2px;
 		}
 	</style>
+	<link rel="stylesheet" type="text/css" href="assets/css/base_overrides.css?v=1.0.22">
 </head>
 
-<body style="max-width:1600px; margin:auto;">
+<body style="">
 
-
+	<div class="">
 	<!-- Intro -->
 	<div class="row clearfix">
 		<div class="col-md-12 nopadd top-bar">
@@ -152,17 +151,18 @@ $col_keys['indoor'] = array(
 			</div>
 
 			<div class="col-md-7 map">
-				<div class="nuru-intro">
+				<div class="nuru-intro" id="mapCol">
 					<div class="col-md-6">
 						<h3 class="mapTitle">Nuru Map</h3>
 					</div>
-					<div class="col-md-offset-3 col-md-3 extras hide">
-						<span class="viewTable"><i class="fas fa-table"></i> View as table &middot; </span> <span class="expandViews"><i class="fas fa-expand-arrows-alt"></i> Expand</span>
+					<div class="col-md-offset-3 col-md-3 extras hideX padd10_t txtright txtwhite" id="feedbackDetailBack">
+						<!--<span class="viewTable"><i class="fas fa-table"></i> View as table &middot; </span> <span class="expandViews"><i class="fas fa-expand-arrows-alt"></i> Expand</span>-->
 					</div>
 				</div>
 
 				<div id="gg_data_result" style=""></div>
 				<div id="map" style="height: 610px; border: 1px solid #AAA;"></div>
+				<div id="feedbackDetail" style="height: 610px; border: 1px solid #AAA; display:none;"></div>
 			</div>
 
 			
@@ -192,7 +192,7 @@ $col_keys['indoor'] = array(
 		</div>
 	</div>
 
-
+	</div>
 
 	<script type="text/javascript" src="assets/js/bootstrap/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="assets/js/misc/jquery.slidetoggle.js"></script>
@@ -242,30 +242,38 @@ $col_keys['indoor'] = array(
 
 	<!-- Nano script -->
 	<script>
+
+	jQuery(document).ready(function($) {
 		$(".nano").nanoScroller({
-			scroll: 'top'
+			scroll: 'top',
 		});
+
+		$(".feedback").nanoScroller({
+			scroll: 'top',
+			alwaysVisible: true
+		});
+
+		$(".nano-pane").css("display","block");                                                                                                                                          
+		$(".nano-slider").css("display","block");
+	});
 	</script>
 
 
 	<script type="text/javascript">
+		let def_lat = -1.2967913;
+		let def_lng = 36.8598615;
+		
 		var map = L.map('map', {
-			center: [-1.2967913, 36.8598615],
+			center: [def_lat, def_lng],
 			minZoom: 0,
 			zoom: 11,
 			maxZoom: 80,
 			// gestureHandling: true
-			scrollWheelZoom: false
+			scrollWheelZoom: true
 		});
 
 		// Prevent map from zooming on mouse move
-		map.on('focus', function() {
-			if (map.scrollWheelZoom.enabled()) {
-				map.scrollWheelZoom.disable();
-			} else {
-				map.scrollWheelZoom.enable();
-			}
-		});
+		/*map.on('focus', function() {if (map.scrollWheelZoom.enabled()) {map.scrollWheelZoom.disable();} else {map.scrollWheelZoom.enable();}});*/
 
 		// Add MarkerClusters - Kevin
 		function getRandomLatLng(map) {
@@ -280,10 +288,7 @@ $col_keys['indoor'] = array(
 				southWest.lng + lngSpan * Math.random());
 		}
 
-		var markers = L.markerClusterGroup();
-		// markers.addLayer(L.marker(getRandomLatLng(map)));
-		// ... Add more layers ...
-		// map.addLayer(markers);
+		var markers = L.markerClusterGroup(); 
 
 		var mopt = {
 			url: '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -300,9 +305,8 @@ $col_keys['indoor'] = array(
 		var layer_main = L.layerGroup();
 		var layer_streets = L.layerGroup();
 
-
-		// Define polyline options
-		// http://leafletjs.com/reference.html#polyline
+ 		// Define polyline options
+		// http://leafletjs.com/reference.html#polyline		
 		var polyline_options = {
 			color: '#9F5CCB',
 			weight: 7,
@@ -314,14 +318,14 @@ $col_keys['indoor'] = array(
 
 		var layer_postsMarkersList = [];
 		let postsMarkersObject = {};
-
+		let mapPosition;
 
 		function getColor(d) {
-			return d > 80 ? 'violet' :
-				d > 60 ? 'green' :
-				d > 40 ? 'yellow' :
-				d > 20 ? 'orange' :
-				'red';
+			return d > 80 ? 'violet' :d > 60 ? 'green' :d > 40 ? 'yellow' :d > 20 ? 'orange' :'red';
+		}
+		
+		function mapCenter(){
+			map.setView([def_lat, def_lng], 11);
 		}
 
 
@@ -378,19 +382,16 @@ $col_keys['indoor'] = array(
 		function clickZoom(e) {
 			map.setView(e.target.getLatLng(),11);
 		}
+		
 		function openPopupCustom(marker_id) {
 			jQuery(document).ready(function($) {
 				postsMarkersObject["" + marker_id + ""].openPopup();
-				jQuery("#map").animate({
-					/*body,html*/
-					scrollTop: 0
-				}, 800);
+				/*jQuery("#map").animate({scrollTop: 0}, 800);*/ 
+				var feedbackDetailContent = $('#feedbackDetailContent').offset().top; 
+				mapPosition = feedbackDetailContent - $('#custom-map').offset().top;  				
 			});
 		}
-
-		/*map.flyTo(new L.LatLng(lat, lng), zoom, {
-									duration: 1.5
-								});*/
+ 
 
 
 
@@ -440,10 +441,13 @@ $col_keys['indoor'] = array(
 		// Display the results as comments - Kevin 30th Mar 2020
 		var data = '';
 
-		function comments(data) {
-			 
+		function comments(data, nchi) {
+			var country_sel = $('#countryFormControlSelect1 option:selected').val(); 
 			let e = (typeof(data) !== 'undefined') ? data : '';
-			let link = "maps/nuru_json.php?tag=" + e;
+			let country = (typeof(nchi) !== 'undefined') ? nchi : country_sel;
+
+			let link = "maps/nuru_json.php?tag=" + e + "&country=" + country;
+			// alert(link);
 
 			jQuery(document).ready(function($) {
 				$.ajax({
@@ -472,8 +476,11 @@ $col_keys['indoor'] = array(
 							let lng = data[c].properties.lng;
 							let tags = data[c].properties.tags;
 
-							let photo = data[c].properties.photo;
+							let photo = data[c].properties.photo;							
 							let photo_original = data[c].properties.photo_original;
+							
+							let country = data[c].properties.country;
+							let flag = data[c].properties.country_flag;
 
 							// alert(photo.length);
 							var img = '';
@@ -485,17 +492,25 @@ $col_keys['indoor'] = array(
 							}
 
 							var findOnMap = '';
+							var findOnMapx = '';
 
 							//console.log("lat", lat.length + " - " + data[c].properties.lat + " - long: " + data[c].properties.lng);
-
+							
 							if (lat != "0") {
-								/* href="javascript:void(0);"*/
-								/* data-href="posts.php?lat=' + lat + '&lng=' + lng + '&name=latlong"*/
-								findOnMap = '&middot <a class="feed_markers" lat="'+lat+'" lng="'+lng+'" data-id="marker_' + record_id + '" ><em> <strong><i class="far fa-dot-circle"></i> Find on map</strong></em></a>';
+								var lbl_country = '';
+								if (country.length !== 0) {
+									lbl_country = '<span class="country_meta"><span class="ico_flag" style="background: url('+flag+') no-repeat;background-size:contain;"></span> '+country+'</span> &middot ';
+								}
+								findOnMap = '<p>'+ lbl_country +'<a class="feed_markers" lat="'+lat+'" lng="'+lng+'" data-parent-id="comment_' + record_id + '" data-id="marker_' + record_id + '" ><em> <strong><i class="far fa-dot-circle"></i> Find on map</strong></em></a></p>';
+							}
+							
+							var tags_text = '';
+							if(tags !== undefined && tags.length > 3){
+								tags_text = '<p class="padd10_t txt12"> <smallx><em><strong>Tags: </strong><span class="tagisi"> ' + tags + '</span></em></smallx> </p>';
 							}
 
 							/* <hr/> <p>'+ img +'</p> */
-							content += '<article class="comment">' + img + '<div class="comment-body"> <div class="text"><p>' + comment + '<br/><a class="more"> More Details</a> </p>  </div> <p class="attribution"> <i class="fas fa-user-alt"></i> <a href="#non">' + author + '</a> &middot; <span class="date"><i class="far fa-clock"></i> ' + time + '</span> ' + findOnMap + '</a></p> <p class="padd10_t txt12"> <smallx><em><strong>Tags: </strong><span class="tagisi"> ' + tags + '</span></em></smallx> </p></div> <div class="hide full_comment">'+ comment_full +'</div> </article>';
+							content += '<article class="comment" id="comment_' + record_id + '">' + img + '<div class="comment-body"> <div class="text"><p>' + comment + '<br/><a class="more"> More Details</a> </p>  </div> <p class="attribution"> <span class="date"><i class="far fa-clock"></i> ' + time + '</span> &middot; <i class="fas fa-user-alt"></i> <a href="#non">' + author + '</a>   ' + findOnMapx + '</a></p> '+ tags_text +'</div> <div class="hide full_comment">'+ comment_full +'</div> ' + findOnMap + ' </article>';
 						}
 
 						// console.log(data);
@@ -519,91 +534,132 @@ $col_keys['indoor'] = array(
 
 		jQuery(document).ready(function($) {
 			
-			comments("");
+			comments("");  
 			jQuery(document).on('click', '.feed_markers', function(e) {
-				var marker_id = jQuery(this).attr("data-id");
-				openPopupCustom(marker_id);
-			});
- 
-		});
-
-
-
-		// Kevin Update - Change the way content is revealed on the map side on click
-		jQuery(document).ready(function($) {
-			$(document).on('click', '.comment', function(data){
-				// alert($(this).('.attribution a'));
-				// alert('comment clicked');
-				// var this = $(this);
-
-				let op = $(this).find('.attribution a').first().text(); //feedback from original poster
+				var parent_id = jQuery(this).attr("data-parent-id");
+				var marker_id = jQuery(this).attr("data-id");				
+				jQuery("#"+parent_id).click();
+				openPopupCustom(marker_id); 
+			}); 
+		
+			/* Kevin Update - Change the way content is revealed on the map side on click	*/	 
+			jQuery(document).on('click', '.comment', function(data){ 
+				
+				let mapColPos = $('#mapCol').offset().top;
+				
+				let op = $(this).find('.attribution a').first().text(); /*feedback from original poster*/
 				let message = $(this).find('.full_comment').html();
 				// let message = comment_full;
 				let date = $(this).find('.date').html();
 				let tags = $(this).find('.tagisi').text();
+				let country_meta = $(this).find('.country_meta').html();
 
 				let img = $(this).find('.comment-img').attr('href');
-				// alert(img);
+				let marker = $(this).find('.feed_markers').attr('data-id');  
+				
 				let image = '';
+				let p_country = '';
 				if(img !== undefined){
 					image = '<div class="imageDetail"><img src="'+ img +'" /> </div>';
+				};
+				 
+				if(country_meta !== undefined){
+					p_country = '<div class=""><span><strong>Country: </strong></span><span>'+ country_meta +'</span></div>';
+				};
+				 
+				if(tags !== undefined && tags.length > 3){
+					tags = '<span class="tags"><strong>Tags: </strong>' + tags + '</span><br/>';
 				};
 
 				let lat = $(this).find('.feed_markers').attr('lat');
 				let lng = $(this).find('.feed_markers').attr('lng');
 
+				let mapLocator = '';
 				
+				if(lat !== undefined || lng !== undefined ){
+					mapLocator = '<div id="custom-map"></div> <hr/>';
+				}else{
+					mapLocator = 'Location information for ' + op  + ' is unavailable';
+				}
 
 				let content = '';
-				content += '<div class="container feedback nano">';
-				content += '<div class="nano-content">';
-				content += '<div> <a class="back"> <i class="fas fa-long-arrow-alt-left"></i> Back to Map</a></div>';
+				content += '<div class="containerx feedbackx nanox feedbackDetailWrap" >';
+				content += '<div class="nano-content" id="feedbackDetailContent">';
+				//content += '<div> <a class="back"> <i class="fas fa-long-arrow-alt-left"></i> Back to Map</a></div>';
 				content += '<h4>'+op+' wrote: </h4>';
 				content += '<div class="message"><p>' + message + '</p></div> <hr/>';
 				content += image;
 				content += '<div class="metadata">';
 				content += '<span class="date"><strong>Date Posted: </strong>' + date + '</span><br/>';
-				content += '<span class="tags"><strong>Tags: </strong>' + tags + '</span>';
+				content += '' + tags + '';
+				content += '' + p_country + '';
 				content += '</div> <hr/>';
 				content += '<h5> Location </h5>';
-				content += '<div id="custom-map"></div> <hr/>';
+				content += mapLocator;
 				content += '</div'; //close nano content
 				content += '</div'; //close container
 
 				$('.mapTitle').text('Feedback from ' + op);
-				$('#map').css('background', '#ffffff');
-				$('#map').html(content);
-
-				// Add this to map
-				var customMap = L.map('custom-map').setView([lat, lng], 13);
-
-				L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-				attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-				}).addTo(customMap);
-
-				var markerIcon = new L.Icon({
-				iconUrl: 'assets/image/marker-icon-green.png',
-				iconSize: [25, 41],
-				iconAnchor: [12, 41],
-				popupAnchor: [1, -34]
+				$('#feedbackDetailBack').html('<div> <a class="back txtgray txt14"> <i class="fas fa-long-arrow-alt-left"></i> Back to Map</a></div>');
 				
-				});
+				/*$('#map').css('background', '#ffffff');
+				$('#map').html(content);*/
+				$('#map').hide();
+				
+				$('#feedbackDetail').html(content).show();
+				
 
-				L.marker([lat, lng], {
-					icon: markerIcon,
-					title: op,
-					riseOnHover: 1
-				}).addTo(customMap).bindPopup(op + '\'s location').openPopup();
+				/* @@Rage -- GET latlng AND ADD TO MAP */
+				let f_markers = $(this).find('.feed_markers');  
+				// let lat = '';
+				// let lng = '';
+				
+				if(f_markers.length > 0){
+					lat = f_markers.attr('lat'); /*$(this).find('.feed_markers').attr('lat');*/
+					lng = f_markers.attr('lng'); /*$(this).find('.feed_markers').attr('lng');*/
+				
+					// Add this to map
+					var customMap = L.map('custom-map').setView([lat, lng], 13);
 
+					L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+					attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+					}).addTo(customMap);
 
+					var markerIcon = new L.Icon({
+						iconUrl: 'assets/image/marker-icon-green.png',
+						iconSize: [25, 41],
+						iconAnchor: [12, 41],
+						popupAnchor: [1, -34]
+					});
 
-				// Get me out of here
+					L.marker([lat, lng], {
+						icon: markerIcon,
+						title: op,
+						riseOnHover: 1
+					}).addTo(customMap).bindPopup(op + '\'s location').openPopup();
+				}		
+				/* END @@Rage -- GET latlng AND ADD TO MAP */	
+
+				$(".comment").removeClass("commSelect");
+				$(this).addClass("commSelect");
+				
+				jQuery(document).scrollTop( mapColPos );
+				
+				/* Get me out of here */
 				$('.back').click(function(){
-					location.reload();
+					// $(".comment").removeClass("commSelect"); //Removed this so user can go back and still see the class - Kevin
+
+					$('#map').show();				
+					$('#feedbackDetail').html("").hide();
+					mapCenter();
+					$('.mapTitle').text('Nuru Map');
+					//if(marker != undefined) { openPopupCustom(marker); }
+					/*location.reload();*/
 				});
 
 				// Change comment background color
-				$(this).find('.text').css('background-color', 'rgba(57, 181, 74, .3)');
+				/*$(this).find('.text').css('background-color', 'rgba(57, 181, 74, .3)');*/
+				
 				
 			});
 
@@ -645,6 +701,9 @@ $col_keys['indoor'] = array(
 			
 			comments(btoa(res));
 		});
+		
+		
+		
 	</script>
 
 
@@ -835,6 +894,86 @@ $col_keys['indoor'] = array(
 
 			});
 		}
+		
+		function responsiveDigs(){
+			jQuery(document).ready(function($) {
+				winwidth = $(window).width(); 
+				if(winwidth < 1000){ 
+					jQuery('.accord-title').addClass("collapsed");
+					jQuery('.panel-collapse').addClass("collapse").removeClass("in");
+				}
+			});
+		}
+		
+		
+
+			//On Change, select country and show coordinates for the capital city
+	jQuery(document).ready(function($){
+		$('#countryFormControlSelect1').on('change', function(){
+			var country = $(this).val();
+			// alert(country);
+			
+
+			// Gather map details from liquidIQ
+			
+			$.ajax({
+				url: 'https://eu1.locationiq.com/v1/search.php?key=56ac2c8eb93fbb&q='+country+'&format=json',
+				type: 'get',
+				dataType: 'json',
+				data: $('#frm_search').serialize(),
+				beforeSend: function() {
+					$('.selCountry').html('loading country info...');
+				},
+				success: function(d) {
+					// console.log(d);
+					// Change the viewing from to this country
+					$('.selCountry').text(country);
+					
+
+					var countryData = d; //JSON.parse(d);
+
+					let countryLat = countryData[0].lat;
+					let countryLng = countryData[0].lon;
+
+					// alert(countryLat +','+ countryLng);
+
+					// Take our people to the new map center based on country
+					// Introduce a condition for smaller countries to be visible eg Kenya
+					if(country === 'Kenya'){
+						map.setView(new L.LatLng(countryLat, countryLng), 6);
+					}else{
+						map.setView(new L.LatLng(countryLat, countryLng), 3);
+					}
+					
+					// Send an ajax request to refresh an include
+					
+					$.ajax({
+						url: 'map_filter_side_country.php?country='+country,
+						type: 'get',
+						success: function(k) {
+							// reload the page
+							$('.map_filters').html(k);
+
+							
+
+						}
+					});
+
+					comments('', country);
+
+				}
+			});
+		});
+
+	});
+		
+		
+		 jQuery(window).on("load", function ($) { 
+		 	responsiveDigs();
+		 	jQuery(window).resize(function() { responsiveDigs(); });
+			var myVar = setInterval(comments, 10000);
+		 });
+		
 	</script>
 
 
