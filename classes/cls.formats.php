@@ -775,7 +775,15 @@ function q_si($value, $uselike=0) {
     return $value;
 }
 
-
+function q_in($value, $uselike=0) {
+	$out = array();
+	if (is_array($value)) {
+		foreach($value as $val){
+			$out[] = q_si($val);
+		}
+	}
+	return $out;
+}
 
 
 function cleanRedStr ($str, $qry="") {
@@ -1145,6 +1153,7 @@ function clean_title($string, $caps = 0)
 	
 	$string = preg_replace($patterns,' ',$string);
 	if($caps == 1){ $string = ucwords(trim($string)); }
+	if($caps == 2){ $string = strtoupper(trim($string)); }
 	$string = trim($string);
 	
 	return $string;

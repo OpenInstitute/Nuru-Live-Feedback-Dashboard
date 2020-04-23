@@ -48,16 +48,25 @@ class displays extends master
 	}
 	
 		
-	function getData($disp_query, $redirect, $disp_front = 0, $title_trunc = 80, $id_label = "id", $blank=0, $dt_table_class = "display") 
+	function getData($disp_query, $redirect, $ops ) 
 	{
-
+		/*$disp_front = 0, $title_trunc = 80, $id_label = "id", $blank=0, $dt_table_class = "display"*/
+		$cols_hide		= (!empty($ops['cols_hide'])) ? $ops['cols_hide'] : []; 
+		$id_label 		= (!empty($ops['id_label'])) ? $ops['id_label'] : 'id';
+		
+		//if(!empty($ops['id_encrypt']) && $ops['id_encrypt'] == 'y') ? $ops['id_label'] : 'id';
+		$disp_front 	= (!empty($ops['disp_front'])) ? $ops['disp_front'] : 0;
+		$title_trunc 	= (!empty($ops['title_trunc'])) ? $ops['title_trunc'] : 80;
+		$dt_table_class = (!empty($ops['dt_table_class'])) ? $ops['dt_table_class'] : 'display';
+		$blank 			= (!empty($ops['blank'])) ? $ops['blank'] : 0;
+		
 		$this->getCount($disp_query);
 		
 		$fieldType 		= array();
 		$field_titles 	= array();
 		$field_output 	= array();
 		
-		$us_type_id  	= @$_SESSION['sess_uawb_front']['member']['u_type_id'];
+		$us_type_id  	= @$_SESSION['sess_ort_front']['member']['u_type_id'];
 		
 		$op_label 		= "op=edit&";
 		if($disp_front ==1) { $op_label = "op=view&"; } 
@@ -68,7 +77,7 @@ class displays extends master
 		
 		echo "<form method=\"post\" action=\"adm_posts.php?tk=".time()."\"  id='adm_fm_oservices' target='_blank'>";
 		
-		if($disp_front == 3 and @$_SESSION['sess_uawb_admin']['actype_id'] <=2 )
+		if($disp_front == 3 and @$_SESSION['sess_ort_admin']['actype_id'] <=2 )
         {
 			
 			/*<option value='send_mail'>Send Email</option><option value='send_sms'>Send SMS</option>*/
@@ -108,18 +117,21 @@ class displays extends master
 				$field_names[$i] = $this->res_fields[$i]; //mysql_fetch_field($this->result, $i);
 				$fieldHead_plain = $field_names[$i]->name;
 				$fieldHead_title = $field_names[$i]->name;
-				$fieldHead 	  = clean_title($field_names[$i]->name, 1);
+				$fieldHead 	  = clean_title($field_names[$i]->name, 2);
 				$fieldType[$i] = strtolower($this->fieldTypeText($field_names[$i]->type));
 				
 				$colnamePrefix = substr($field_names[$i]->name,0,4);
 				
 				$colAlign = (stringExists($field_names[$i]->name))? " txtright" : "";
 				
+				
+			if(!in_array($field_names[$i]->name, $cols_hide)) 
+			{	
 				if ( substr($fieldHead_plain, 0, 10) =="colserial_") {
 					//$fieldHead_title = trim(substr($fieldHead_plain, 10, 100));
 					
 					//$field_names[$i]->name	= $fieldHead_title;
-					$fieldHead = clean_title(trim(substr($fieldHead_plain, 10, 100)), 1);
+					$fieldHead = clean_title(trim(substr($fieldHead_plain, 10, 100)), 2);
 				}
 				
 				//$field_titles[$field_names[$i]->name] = $field_names[$i]->name;
@@ -171,7 +183,7 @@ class displays extends master
 							if ($field_names[$i]->name!="portal" and $field_names[$i]->name!="gall_path")
 							{
 								if ( substr($fieldHead_plain, 0, 10) =="colserial_") {
-									$fieldHead = clean_title(trim(substr($fieldHead_plain, 10, 100)), 1);
+									$fieldHead = clean_title(trim(substr($fieldHead_plain, 10, 100)), 2);
 								}
 								$tbHeadCols .= "<th class='".$colAlign."'>".$fieldHead."</th> ";
 								$tbFootCols .= "<th>&nbsp;</th>";
@@ -203,6 +215,8 @@ class displays extends master
 					$tbHeadCols .= "<th class='".$small_col."' ".$small_col_title.">".$fieldHead."</th>";
 					$tbFootCols .= "<th>&nbsp;</th>";
 				}
+				
+			}
 			}
 		
 		
@@ -216,7 +230,7 @@ class displays extends master
 		
 		if($disp_front == 3)
 		{	
-			$_SESSION['sess_uawb_adm_report_header'] = $field_titles; 	
+			$_SESSION['sess_ort_adm_report_header'] = $field_titles; 	
 		}
 		
 		echo $tbHeadCols;
@@ -224,8 +238,10 @@ class displays extends master
 		echo "<tfoot><tr>".$tbFootCols."</tr></tfoot>";
 		echo "<tbody>";
 		$rn=1;
-			while ($field_data = $this->fetchRow($this->result)) 			// Row Data
-			{ 
+		
+		
+		while ($field_data = $this->fetchRow($this->result)) 			// Row Data
+		{ 
 				
 				$rec_id = $field_data[0];
 				
@@ -247,6 +263,12 @@ class displays extends master
 				
 				for ($f=0 ; $f<=($this->num_fields-1); $f++) 
 				{
+					
+					//@start_ignore
+					if(!in_array($field_names[$f]->name, $cols_hide)) 
+					{
+					
+					
 					$tdMax = "";
 					$field = "";
 					$field = $field_data[$f]; 
@@ -278,8 +300,9 @@ class displays extends master
 						{ $link_redirect = "hforms.php?d=profiles&"; }*/
 					}
 					
-					
-					$link_redirectb = $link_redirect.$op_label."".$id_label."=".$field_data[0];
+					$id_label_val = (!empty($ops['id_encrypt']) && $ops['id_encrypt'] == 'y') ? base64_encode($field_data[$id_label]) : $field_data[$id_label];
+						
+					$link_redirectb = $link_redirect.$op_label."id=".$id_label_val; /*$field_data[$id_label];*/
 					
 					if($this->addir=="sitting_allowancesX" or $this->addir=="member_allowanceX") 
 					{
@@ -299,6 +322,14 @@ class displays extends master
 							$isChild = "";
 							$field = strip_tags_clean(clean_output($field));
 							$field = smartTruncateNew($field, $title_trunc);
+							
+							if($this->addir=="user_posts") 
+							{
+								$field_text = $field;
+								$pieces = explode('@', $field); 
+								$field =  $pieces[0];
+								$link_blank		= " title='".$field_text."' ";
+							}
 												
 							$field = $isChild . "<a href='".$link_redirectb."' ".$link_modal." ".$link_blank.">$field</a>"; 
 							echo "<td>".$field."</td>"; 
@@ -324,19 +355,24 @@ class displays extends master
 							echo "<td >" .$lebo . "</td>"; 
 						} 
 					
-						elseif ( $field_names[$f]->name=="email") {
+						elseif ( $field_names[$f]->name=="email" or
+							   	 $field_names[$f]->name=="user_name"
+							   ) {
 							$rc_email_lebo = $field;
 							$rc_email_fild = "";
 							
 							if(strlen(trim($field)) > 5)
 							{
-                                $rc_email_fild = "<input type='hidden' name='ac_email[".$field_data[0]."]' value='".$field."' >";
-                                
-                                if($disp_front == 3) {
-                                    $rc_email_link = $field;								
-                                    $rc_email_arr = @preg_split("/@/", $field);  $rc_email_text = $rc_email_arr[0];
+								$rc_email_link = '';
+                                $rc_email_arr = @preg_split("/@/", $field);  $rc_email_text = $rc_email_arr[0];
+								
+                                if($disp_front == 3 or $field_names[$f]->name=="email") {
+                                    $rc_email_link = $field;
+                                	$rc_email_fild = "<input type='hidden' name='ac_email[".$field_data[0]."]' value='".$field."' >";                                    
                                     $rc_email_lebo = "<a href='mailto:".$field."' title='Send email: ".$field."'>".$rc_email_text."</a>";
-                                }
+                                } else {
+									$rc_email_lebo = clean_title($rc_email_text, 1) ;
+								}
                                 
 							}
 							
@@ -541,6 +577,17 @@ class displays extends master
                                             
 										}
 										
+										elseif( $field_names[$f]->name=="gps") 
+										{
+											 
+											 
+											$lebo_color = ' class="label label-'.strtolower($field).'" ';							
+											$lebo_field = '<span'.$lebo_color.'>'.ucwords($field).'</span>';
+
+											$field = $lebo_field; 
+                                            
+										}
+										
 										else
 										{
 											$tdMax = ""; //" style=\"max-width:150px;\"";
@@ -592,41 +639,27 @@ class displays extends master
 								$field_names[$f]->name=="featured" or
 								$field_names[$f]->name=="surrendered" or
 								$field_names[$f]->name=="expired" or
-								$field_names[$f]->name=="visible") 
-						{
+								$field_names[$f]->name=="visible" ) 
+						{ 
+							 
 							
-							$overdue = '';
-							if($this->addir=="member_imprests" and $field_names[$f]->name=="surrendered" and $field<>1) {
-								$date_diff = dateDifference($field_data["date_due"]);
-								if($date_diff < 0)
-								{ $overdue = '<span class="label label-warning" title="Overdue">Overdue</span>'; }
-								if($field == 2)
-								{ $overdue = '<span class="label label-info" title="Deducted">Deducted</span>'; }
-								
-							}
-							
-							//
-							/*if($field==0)  
-							{$field="<img src='".DISP_IMAGES."icons/ico_off.png'>";} else  
-							{$field="<img src='".DISP_IMAGES."icons/ico_on.png'>";} //  class='center'*/
-							
-							if($field==0 or $field==2)  {$field="No";} elseif($field==1)  {$field="Yes";}
+							if($field==0 or $field==2 or $field=='no')  {$field="No";} elseif($field==1 or $field=='yes')  {$field="Yes";}
 							$lebo_color = ' class="label label-'.strtolower($field).'" ';							
 							$lebo_field = '<span'.$lebo_color.'>'.$field.'</span>';
 							
-							echo "<td>".$lebo_field." ".$overdue."</td>";
+							echo "<td>".$lebo_field." </td>";
 						}
 						
 						
 						elseif ($field_names[$f]->name=="show" or
 								$field_names[$f]->name=="active" or 
-								$field_names[$f]->name=="published" or 
+								$field_names[$f]->name=="published" or   
 								$field_names[$f]->name=="visibleX") 
 						{
-							if($field==0)  {$field="No";} elseif($field==1)  {$field="Yes";}
+							if($field==0 or strtolower($field)=='no')  {$field="No";} elseif($field==1 or strtolower($field)=='yes')  {$field="Yes";}
 							//else {$lebo_field = $field;}
 							
-							$lebo_id 	= $field_data["id"];
+							$lebo_id 	= $id_label_val; /*$field_data[$id_label];*/ /*"id"*/
 							$lebo_field = $field;
 							$lebo_action= 'togg_'.strtolower($lebo_field);
 							$lebo_color = ' class="label label-'.strtolower($lebo_field).'" ';
@@ -714,6 +747,10 @@ class displays extends master
 						
 						
 						
+				
+					}
+				//@end_ignore
+					
 				}
 				
 				if($disp_front == 0 or $disp_front == 3)
@@ -723,11 +760,17 @@ class displays extends master
 				
 				echo "</tr>";
 				$rn += 1;
-			} 
+			
+			
+			
+			
+			
+		
+		} 
 		
 			if($disp_front == 3)
             {
-                $_SESSION['sess_uawb_adm_report_values'] = $field_output;		
+                $_SESSION['sess_ort_adm_report_values'] = $field_output;		
             }
         
 		$adm_list_cat = generate_seo_title($this->addir, '_');
@@ -750,7 +793,7 @@ class displays extends master
 		//echobr($this->addir);
 		$fieldType = array();
 		
-		$us_type_id  = @$_SESSION['sess_uawb_front']['member']['u_type_id'];
+		$us_type_id  = @$_SESSION['sess_ort_front']['member']['u_type_id'];
 		
 		$op_label = "op=edit&";
 		if($disp_front ==1) { $op_label = "op=view&"; } 
