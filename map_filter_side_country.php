@@ -12,6 +12,10 @@ if(!empty($_GET['country'])){
 }else{
 	$nchi = '%';
 }
+
+if($nchi == 'All'){
+	$nchi = '%';
+}
 // echo $nchi; exit;
 
 
