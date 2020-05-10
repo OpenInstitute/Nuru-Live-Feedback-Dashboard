@@ -1,7 +1,7 @@
 
 <?php 
 
-$tags_main = array("basic food items availability","basic food items cost","discrimination","disturbance","restriction of movement","suspected covid-19 case","water availability","water cost", "social distancing", "no health care workers");
+$tags_main = array("basic food items availability","basic food items cost","discrimination","disturbance","restriction of movement","suspected covid-19 case","water availability","water cost", "social distancing", "no health care workers", "social distancing", "shortage of masks", "observance of measures to curb Covid-19 virus");
 
 
 $sq_qry = "SELECT `tag_name`, COUNT(`tag_item_id`) as `tag_items` FROM `ort_posts_tags` GROUP BY `tag_name` order by  `tag_name`  ";
