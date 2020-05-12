@@ -52,9 +52,10 @@ switch ($sel_cat)
 		$image_extenstions = array('jpg', 'jpeg', 'png', 'gif');
 
 
-		$qry = "SELECT `ort_posts`.*, `ort_resources_table`.`res_file_url`, `ort_resources_table`.`res_file_name`, `ort_posts`.`post_entry_id` as `the_entry_id` FROM `ort_posts` left join `ort_resources_table` on  `ort_posts`.`user_id` =  `ort_resources_table`.`user_id`  and `ort_posts`.`post_session` =  `ort_resources_table`.`post_session`  ".$tags_crit."  group by `ort_posts`.`post_entry_id` order by `ort_posts`.`post_entry_id` DESC;";
+		/*$qry = "SELECT `ort_posts`.*, `ort_resources_table`.`res_file_url`, `ort_resources_table`.`res_file_name`, `ort_posts`.`post_entry_id` as `the_entry_id` FROM `ort_posts` left join `ort_resources_table` on  `ort_posts`.`user_id` =  `ort_resources_table`.`user_id`  and `ort_posts`.`post_session` =  `ort_resources_table`.`post_session`  ".$tags_crit."  group by `ort_posts`.`post_entry_id` order by `ort_posts`.`post_entry_id` DESC;";*/
 		
-		// echobr($qry);
+		$qry = "SELECT `ort_posts`.*, `ort_posts`.`post_entry_id` as `the_entry_id` FROM `ort_posts`  ".$tags_crit."  order by `ort_posts`.`post_entry_id` DESC;";
+		
 
 		if(!empty($sel_ops['dbg'])){
 			echobr($qry);
@@ -70,7 +71,7 @@ switch ($sel_cat)
 		
 		$rec_grouped = array(); 
 		
-		$domain_path = 'https://nuru.live/dashboard/';
+		$domain_path = 'nuru.live/dashboard';
 		$domain_path_rage = 'http://localhost/oireporting_web/';
 		
 		$i = 0;
@@ -79,6 +80,56 @@ switch ($sel_cat)
 			$row  	= array_map("clean_output", $row_a);	
 			/*displayArray($row); //exit;	*/
 			/*$coords = explode(',', $row['LatLong']);*/
+			
+			$row['res_file_url'] 	= '';
+			$post_photo_thumb 		= '';
+			$post_photo_trim 		= '';
+			$post_files 			= array();
+			
+			$sq_files = "SELECT `res_record_id` as `_fid`, `res_file_url` as `_url`, `res_file_name` as `_name`, `res_ext` as `_ext`, `res_type` as `_type` FROM `ort_resources_table` WHERE   `user_id` = ".q_si(trim($row['user_id']))." and `post_session` = ".q_si(trim($row['post_session']))." and `res_file_url`  not like '%[%' order by `res_record_id` ASC;";
+			$rs_files = $cndb->dbQueryFetch($sq_files); /*, '_fid'*/
+			
+			if(!empty($sel_ops['dbg'])){
+				echobr($qry);
+				displayArray($rs_files);
+			}
+			
+			if(count($rs_files) > 0){
+				//displayArray($rs_files);
+				$post_files = $rs_files;
+				
+				$photo_one = array_sub_keys_val($rs_files, '_type', 'p');
+				if(count($photo_one)){
+					$res_image = current($photo_one);
+					$post_photo_thumb 		= $res_image['_url'];
+					$post_photo_trim 		= $res_image['_url'];
+				}
+				 
+				//$ll = 0;
+				//foreach($rs_files as $fk => $fv){ 
+					//TODO: CREATE THUMBNAIL
+					/* if(strpos($res_url, $domain_path) === 0 or strpos($res_url, $domain_path) > 0){ }*/
+						
+						
+					/*$ext_start 	   	= strrpos($fv , ".")+1;				
+					$res_ext		= trim(substr($fv, $ext_start, 5));
+					$res_image		= clean_Image($fv); 
+					if($res_ext !== '3gp'){						
+						//displayArray($res_image);
+						if($ll == 0){
+							$post_photo_thumb 		= $res_image['_thumb'];
+							$post_photo_trim 		= $res_image['_name'];
+						} else {
+							$post_files[][$res_image['_ext']] = $res_image['_thumb'];
+						}
+						$ll += 1;
+					} else {
+						$post_files[][$res_image['_ext']] = $res_image['_name'];
+					}*/
+					 
+				//}
+				//displayArray($post_files);
+			}
 
 			$post_latitude 		= floatval($row['post_latitude']);
 			$post_longitude 	= floatval($row['post_longitude']);
@@ -96,34 +147,33 @@ switch ($sel_cat)
 
 			$post_description	= $row['post_description'];
 			$post_tag			= $row['post_tag'];
-			$post_photo_trim    = str_replace($domain_path, "", $row['res_file_url']);
-			$post_photo_trim    = str_replace($domain_path_rage, "", $post_photo_trim);
+			
 			
 			$post_country		= $row['post_country'];
-			$post_country_code	= $row['post_country_code'];
+			$post_country_code	= strtolower($row['post_country_code']);
 			$post_country_flag	= ($post_country_code !== '') ? DISP_IMAGES.'flags/'.$post_country_code .'.png' : '';
-
-			/*echobr(SITE_PATH.$post_photo_trim);*/			
-			$post_photo_thumb 	= '';
-			
+ 
 			$post_published		= $row['published'];
 
 			//if(!array_key_exists($user_entry_key, $rec_grouped) ) /*and $post_by_full !== ''*/
 			//{	
 				/* @@ Rage -- Check if image exists */
+			
+			/*$post_photo_trim    = str_replace($domain_path, "", $row['res_file_url']);
+			$post_photo_trim    = str_replace($domain_path_rage, "", $post_photo_trim);
+			
 				if (file_exists(SITE_PATH.$post_photo_trim)) { 					
 					$photo_ext			= getFileExtension($post_photo_trim);
 					if(in_array($photo_ext, $image_extenstions)){
 						$post_photo_thumb = getThumbName($post_photo_trim); 
 						if(!file_exists(SITE_PATH.$post_photo_thumb)){
 							$post_photo_thumb = autoThumbnail($post_photo_trim, 1);						
-						} else { /*echobr($post_photo_thumb . " iko");*/ }
+						}  
 					}  
-					//echobr($post_photo_trim .' ---- '. $post_photo_thumb);
 				} else {
 					$post_photo_trim = '';
 				}
-					
+			*/		
 					
 				$post_photo			= ($row['res_file_url'] !== "") ? $row['res_file_url'] : "";
 				$post_date_device	= date("Y-F-d H:i", strtotime($row['post_date_device'])); //$row['post_date_device'];
@@ -149,16 +199,17 @@ switch ($sel_cat)
 					'comments_trim' 	=> $post_description_trim,
 					'post_by' 	=> $post_by,
 					'rating' 	=> '',
-					'url' 		=> '',
-					'photo' 	=> ''.$post_photo_thumb.'',
-					'photo_original' 	=> ''.$post_photo_trim.'',
+					'url' 		=> '',					
 					'entity_code' 		=> $post_session,
 					'tags' 		=> ''.$post_tag.'',
 					'country' 	=> $post_country,
 					'country_code' 		=> $post_country_code,
-					'country_flag' 		=> $post_country_flag,
+					'country_flag' 		=> $post_country_flag, 
 					'lat' 		=> $post_latitude,
-					'lng' 		=> $post_longitude
+					'lng' 		=> $post_longitude,
+					'photo' 	=> ''.$post_photo_thumb.'',
+					'photo_original' 	=> ''.$post_photo_trim.'',
+					'otherfiles' 		=> json_encode($post_files)
 				);
 
 				$map_recs[] = array(
