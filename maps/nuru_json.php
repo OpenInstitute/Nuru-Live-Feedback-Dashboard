@@ -182,7 +182,7 @@ switch ($sel_cat)
 				$post_by			= ($user_em_check) ? ucwords(substr($post_by_full, 0, $user_em_check)) : '';
 				$post_date			= date("Y-F-d", $row['post_date_web']);
 				 
-				$post_tag 			= str_replace('|', ", ", substr($post_tag, 0, -1) );
+				$post_tag 		        = implode(",", array_filter(explode("|", $post_tag)));
 				
 				
 				$post_description_trim = smartTruncateNew($post_description, 150);
